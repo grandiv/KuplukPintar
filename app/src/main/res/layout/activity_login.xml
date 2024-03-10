@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
-
         <TextView
             android:fontFamily="@font/PoppinsRegular"
             android:gravity="center"
