@@ -55,6 +55,8 @@ class SignInActivity : AppCompatActivity() {
                                     if (pasienPassword == password) {
                                         // Redirect to HomeFragment in MainActivity
                                         val intent = Intent(this, MainActivity::class.java)
+                                        intent.putExtra("email", email)
+                                        intent.putExtra("role", "pasien")
                                         startActivity(intent)
                                         finish()
                                     } else {
@@ -69,6 +71,8 @@ class SignInActivity : AppCompatActivity() {
                         if (dokterPassword == password) {
                             // Redirect to DokterDaftarPasienActivity
                             val intent = Intent(this, DokterDaftarPasienActivity::class.java)
+                            intent.putExtra("email", email)
+                            intent.putExtra("role", "dokter")
                             startActivity(intent)
                             finish()
                         } else {

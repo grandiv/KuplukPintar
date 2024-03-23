@@ -1,22 +1,21 @@
 package id.grandiv.kuplukpintar
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.view.View
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentTransaction
 import android.widget.FrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import id.grandiv.kuplukpintar.ui.theme.KuplukPintarTheme
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var db: FirebaseFirestore
 
     lateinit var riwayatFragment : RiwayatFragment
     lateinit var jadwalKontrolFragment : JadwalKontrolFragment
@@ -27,7 +26,45 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //now let's create our framelayout and bottomnav variables
+
+        db = Firebase.firestore
+
+        val logo = findViewById<ImageView>(R.id.logo)
+        val userName = findViewById<TextView>(R.id.user_name)
+        val menu = findViewById<Button>(R.id.patientlist)
+
+        // Set the logo
+        logo.setImageResource(R.drawable.logo)
+
+        // Get the email and user type from the intent extras
+        val email = intent.getStringExtra("email")
+        val role = intent.getStringExtra("role")
+
+        // Hide the "patientlist" button for patients
+        if (role == "pasien") {
+            menu.visibility = View.GONE
+        }
+
+        // Query the Firestore database to get the user name
+        if (role != null) {
+            db.collection(role)
+                .whereEqualTo("akun.email", email)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val user = documents.documents[0]
+                        val userNameValue = (user["akun"] as Map<*, *>)["nama lengkap"] as String
+                        userName.text = userNameValue
+                    }
+                }
+        }
+
+        // Set the menu click listener
+        menu.setOnClickListener {
+            val intent = Intent(this, DokterDaftarPasienActivity::class.java)
+            startActivity(intent)
+        }
+
         var bottomnav = findViewById<BottomNavigationView>(R.id.BottomNavMenu)
         var frame = findViewById<FrameLayout>(R.id.frameLayout)
         //Now let's the default Fragment

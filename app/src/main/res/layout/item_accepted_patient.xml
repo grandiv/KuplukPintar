@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/rounded_blue_border">
+
+    <TextView
+        android:id="@+id/tv_patient_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Patient Name" />
+
+    <TextView
+        android:id="@+id/tv_patient_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Patient Address" />
+
+    <TextView
+        android:id="@+id/tv_patient_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Patient Phone Number" />
+</LinearLayout>

@@ -27,6 +27,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".FormDokterActivity" />
         <activity android:name=".FormPasienActivity" />
+        <activity android:name=".DokterDaftarPasienActivity" />
     </application>
 
 </manifest>
