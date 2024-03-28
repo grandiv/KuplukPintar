@@ -17,7 +17,7 @@ class DokterDaftarPasienActivity : AppCompatActivity() {
     private lateinit var acceptedPatients: MutableList<AcceptedPatient>
     private lateinit var patientRequestAdapter: PatientRequestAdapter
     private lateinit var acceptedPatientAdapter: AcceptedPatientAdapter
-    private lateinit var doctorId: String
+    private lateinit var nomorSip: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +27,7 @@ class DokterDaftarPasienActivity : AppCompatActivity() {
 
         // Get the ID of the logged-in doctor from the shared preferences
         val sharedPref = getSharedPreferences("MyPref", MODE_PRIVATE)
-        doctorId = sharedPref.getString("doctorId", "") ?: ""
+        nomorSip = sharedPref.getString("nomorSip", "") ?: ""
 
         patientRequestRecyclerView = findViewById(R.id.patient_request_recycler_view)
         patientRequestRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -44,21 +44,9 @@ class DokterDaftarPasienActivity : AppCompatActivity() {
         acceptedPatientAdapter = AcceptedPatientAdapter(acceptedPatients)
         acceptedPatientsRecyclerView.adapter = acceptedPatientAdapter
 
-        // Query Firestore to get the patient requests for the current doctor
-        db.collection("patientRequests")
-            .whereEqualTo("doctorId", doctorId)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val patientRequest = document.toObject(PatientRequest::class.java)
-                    patientRequests.add(patientRequest)
-                }
-                patientRequestAdapter.notifyDataSetChanged()
-            }
-
         // Query Firestore to get the accepted patients for the current doctor
         db.collection("acceptedPatients")
-            .whereEqualTo("doctorId", doctorId)
+            .whereEqualTo("nomorSip", nomorSip)
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
@@ -69,7 +57,7 @@ class DokterDaftarPasienActivity : AppCompatActivity() {
 
                 // After fetching the accepted patients, fetch the patient requests
                 db.collection("patientRequests")
-                    .whereEqualTo("doctorId", doctorId)
+                    .whereEqualTo("nomorSip", nomorSip)
                     .get()
                     .addOnSuccessListener { documents ->
                         for (document in documents) {
@@ -90,7 +78,7 @@ class DokterDaftarPasienActivity : AppCompatActivity() {
 
     private fun acceptPatientRequest(patientRequest: PatientRequest) {
         // Create a new AcceptedPatient object
-        val acceptedPatient = AcceptedPatient(patientRequest.name, patientRequest.email, patientRequest.address, patientRequest.phoneNumber, patientRequest.doctorId)
+        val acceptedPatient = AcceptedPatient(patientRequest.name, patientRequest.email, patientRequest.address, patientRequest.phoneNumber, patientRequest.nomorSip)
 
         // Add the AcceptedPatient to the acceptedPatients collection in Firestore
         db.collection("acceptedPatients")
@@ -103,9 +91,15 @@ class DokterDaftarPasienActivity : AppCompatActivity() {
 
         // Remove the patient request from the "patientRequests" collection in Firestore
         db.collection("patientRequests")
-            .document(patientRequest.doctorId) // Replace with the actual document ID
+            .document(patientRequest.email) // Replace with the actual document ID
             .delete()
             .addOnSuccessListener {
+                // Remove the patient request from the RecyclerView
+                val index = patientRequests.indexOf(patientRequest)
+                if (index != -1) {
+                    patientRequestRecyclerView.removeViewAt(index)
+                }
+
                 // Remove the patient request from the local list and update the RecyclerView
                 patientRequests.remove(patientRequest)
                 patientRequestAdapter.notifyDataSetChanged()

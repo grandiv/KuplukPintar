@@ -5,13 +5,13 @@ class AcceptedPatient() {
     lateinit var email: String
     lateinit var address: String
     lateinit var phoneNumber: String
-    lateinit var doctorId: String
+    lateinit var nomorSip: String
 
-    constructor(name: String, email: String, address: String, phoneNumber: String, doctorId: String) : this() {
+    constructor(name: String, email: String, address: String, phoneNumber: String, nomorSip: String) : this() {
         this.name = name
         this.email = email
         this.address = address
         this.phoneNumber = phoneNumber
-        this.doctorId = doctorId
+        this.nomorSip = nomorSip
     }
 }

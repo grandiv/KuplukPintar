@@ -73,10 +73,10 @@ class FormPasienActivity : AppCompatActivity() {
                 .add(pasien)
                 .addOnSuccessListener {
                     // Get the ID of the selected doctor
-                    val doctorId = getDoctorId(sDokterPengawas)
+                    val nomorSip = getnomorSip(sDokterPengawas)
 
                     // Create a PatientRequest object
-                    val patientRequest = PatientRequest(sNamaLengkap, sEmail, sAlamatLengkap, sNomorTelp, doctorId)
+                    val patientRequest = PatientRequest(sNamaLengkap, sEmail, sAlamatLengkap, sNomorTelp, nomorSip)
 
                     // Add the PatientRequest to the patientRequests collection in Firestore
                     db.collection("patientRequests")
@@ -126,18 +126,18 @@ class FormPasienActivity : AppCompatActivity() {
             }
     }
 
-    private fun getDoctorId(doctorName: String): String {
-        var doctorId = ""
+    private fun getnomorSip(doctorName: String): String {
+        var nomorSip = ""
 
         db.collection("dokter")
             .whereEqualTo("nama (dengan gelar)", doctorName)
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
-                    doctorId = document.id
+                    nomorSip = document.id
                 }
             }
 
-        return doctorId
+        return nomorSip
     }
 }
