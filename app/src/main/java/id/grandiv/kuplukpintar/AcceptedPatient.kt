@@ -1,6 +1,6 @@
 package id.grandiv.kuplukpintar
 
-class PatientRequest() {
+class AcceptedPatient() {
     lateinit var name: String
     lateinit var email: String
     lateinit var address: String

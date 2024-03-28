@@ -72,12 +72,26 @@ class FormPasienActivity : AppCompatActivity() {
             db.collection("pasien")
                 .add(pasien)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Berhasil mendaftar sebagai pasien", Toast.LENGTH_SHORT).show()
-                    etNamaLengkap.text.clear()
-                    etAlamatLengkap.text.clear()
-                    etNomorTelp.text.clear()
-                    etEmail.text.clear()
-                    etPassword.text.clear()
+                    // Get the ID of the selected doctor
+                    val doctorId = getDoctorId(sDokterPengawas)
+
+                    // Create a PatientRequest object
+                    val patientRequest = PatientRequest(sNamaLengkap, sEmail, sAlamatLengkap, sNomorTelp, doctorId)
+
+                    // Add the PatientRequest to the patientRequests collection in Firestore
+                    db.collection("patientRequests")
+                        .add(patientRequest)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Berhasil mendaftar sebagai pasien", Toast.LENGTH_SHORT).show()
+                            etNamaLengkap.text.clear()
+                            etAlamatLengkap.text.clear()
+                            etNomorTelp.text.clear()
+                            etEmail.text.clear()
+                            etPassword.text.clear()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Error occurred: ${it.message}", Toast.LENGTH_SHORT).show()
+                        }
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "Error occurred: ${it.message}", Toast.LENGTH_SHORT).show()
@@ -110,5 +124,20 @@ class FormPasienActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Request Failed", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun getDoctorId(doctorName: String): String {
+        var doctorId = ""
+
+        db.collection("dokter")
+            .whereEqualTo("nama (dengan gelar)", doctorName)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    doctorId = document.id
+                }
+            }
+
+        return doctorId
     }
 }
