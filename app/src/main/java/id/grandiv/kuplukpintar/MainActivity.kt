@@ -45,6 +45,13 @@ class MainActivity : AppCompatActivity() {
             menu.visibility = View.GONE
         }
 
+        if (role == "dokter") {
+            // Navigate to HomeFragment
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frameLayout, HomeFragment())
+            transaction.commit()
+        }
+
         // Query the Firestore database to get the user name
         if (role != null) {
             db.collection(role)

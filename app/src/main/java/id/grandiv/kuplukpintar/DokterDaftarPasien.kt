@@ -1,5 +1,6 @@
 package id.grandiv.kuplukpintar
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class DokterDaftarPasienActivity : AppCompatActivity() {
+class DokterDaftarPasienActivity : AppCompatActivity(), OnPatientClickListener {
     private lateinit var db: FirebaseFirestore
     private lateinit var patientRequestRecyclerView: RecyclerView
     private lateinit var acceptedPatientsRecyclerView: RecyclerView
@@ -41,7 +42,7 @@ class DokterDaftarPasienActivity : AppCompatActivity() {
         patientRequestAdapter = PatientRequestAdapter(patientRequests, ::acceptPatientRequest, ::rejectPatientRequest)
         patientRequestRecyclerView.adapter = patientRequestAdapter
 
-        acceptedPatientAdapter = AcceptedPatientAdapter(acceptedPatients)
+        acceptedPatientAdapter = AcceptedPatientAdapter(acceptedPatients, this)
         acceptedPatientsRecyclerView.adapter = acceptedPatientAdapter
 
         // Query Firestore to get the accepted patients for the current doctor
@@ -110,5 +111,16 @@ class DokterDaftarPasienActivity : AppCompatActivity() {
         // Remove the patient request from the list and update the RecyclerView
         patientRequests.remove(patientRequest)
         patientRequestAdapter.notifyDataSetChanged()
+    }
+
+    override fun onPatientClick(patient: AcceptedPatient) {
+        // Start MainActivity
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("email", patient.email)
+        intent.putExtra("role", "dokter")
+        startActivity(intent)
+
+        // Finish current activity
+        finish()
     }
 }

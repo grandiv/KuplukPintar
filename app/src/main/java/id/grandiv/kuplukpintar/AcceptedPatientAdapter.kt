@@ -6,8 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
+interface OnPatientClickListener {
+    fun onPatientClick(patient: AcceptedPatient)
+}
+
 class AcceptedPatientAdapter(
-    private val acceptedPatients: MutableList<AcceptedPatient>
+    private val acceptedPatients: MutableList<AcceptedPatient>,
+    private val listener: OnPatientClickListener
 ) : RecyclerView.Adapter<AcceptedPatientAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -26,6 +31,11 @@ class AcceptedPatientAdapter(
         holder.tvPatientName.text = patient.name
         holder.tvPatientAddress.text = patient.address
         holder.tvPatientPhoneNumber.text = patient.phoneNumber
+
+        // Set the click listener for the item view
+        holder.itemView.setOnClickListener {
+            listener.onPatientClick(patient)
+        }
     }
 
     override fun getItemCount() = acceptedPatients.size

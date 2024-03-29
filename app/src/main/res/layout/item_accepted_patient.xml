@@ -4,23 +4,27 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/rounded_blue_border">
+    android:background="@drawable/rounded_blue_border"
+    android:layout_margin="16dp">
 
     <TextView
         android:id="@+id/tv_patient_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Patient Name" />
+        android:text="Patient Name"
+        android:fontFamily="@font/poppinsregular"/>
 
     <TextView
         android:id="@+id/tv_patient_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Patient Address" />
+        android:text="Patient Address"
+        android:fontFamily="@font/poppinsregular"/>
 
     <TextView
         android:id="@+id/tv_patient_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Patient Phone Number" />
+        android:text="Patient Phone Number"
+        android:fontFamily="@font/poppinsregular"/>
 </LinearLayout>
