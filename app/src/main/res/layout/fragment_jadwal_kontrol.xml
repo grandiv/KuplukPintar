@@ -1,15 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".JadwalKontrolFragment">
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Fragment Jadwal Kontrol"
-        android:gravity="center"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
-</FrameLayout>
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+" />
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit" />
+
+        <TextView
+            android:id="@+id/tv_jadwal_kontrol_rutin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Jadwal Kontrol Rutin"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/checklistButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Checklist" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewJadwal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tv_riwayat_kontrol"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Riwayat Kontrol"
+        android:textSize="18sp"
+        android:padding="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewRiwayat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>
