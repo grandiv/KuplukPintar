@@ -3,24 +3,35 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/rounded_blue_border"
+    android:layout_margin="16dp">
 
     <TextView
         android:id="@+id/tv_tanggal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tanggal" />
+        android:text="Tanggal:"
+        android:fontFamily="@font/poppinsregular"/>
+
+    <TextView
+        android:id="@+id/tv_tempat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tempat:"
+        android:fontFamily="@font/poppinsregular"/>
 
     <TextView
         android:id="@+id/tv_dokter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dokter" />
-
+        android:text="Dokter:"
+        android:fontFamily="@font/poppinsregular"/>
     <TextView
         android:id="@+id/tv_pesan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pesan" />
+        android:text="Pesan:"
+        android:fontFamily="@font/poppinsregular"/>
 
 </LinearLayout>

@@ -1,7 +1,5 @@
 package id.grandiv.kuplukpintar
-
 import com.google.firebase.Timestamp
-
 class JadwalKontrol() {
     lateinit var tanggal: Timestamp
     lateinit var tempat: String

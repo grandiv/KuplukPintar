@@ -2,31 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:layout_margin="16dp"
+    android:background="@drawable/rounded_blue_border">
 
-    <TextView
-        android:id="@+id/tv_tanggal"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Tanggal" />
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
 
-    <TextView
-        android:id="@+id/tv_tempat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tempat" />
+        <TextView
+            android:id="@+id/tv_tanggal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tanggal:"
+            android:fontFamily="@font/poppinsregular"/>
 
-    <TextView
-        android:id="@+id/tv_dokter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dokter" />
+        <TextView
+            android:id="@+id/tv_tempat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tempat:"
+            android:fontFamily="@font/poppinsregular"/>
+        <TextView
+            android:id="@+id/tv_dokter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dokter:"
+            android:fontFamily="@font/poppinsregular"/>
+        <TextView
+            android:id="@+id/tv_pesan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pesan:"
+            android:fontFamily="@font/poppinsregular"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_checklist"
-        android:layout_width="wrap_content"
+        android:layout_width="48dp"
         android:layout_height="wrap_content"
-        android:text="Checklist" />
-
+        android:background="@drawable/checkcircle"/>
 </LinearLayout>

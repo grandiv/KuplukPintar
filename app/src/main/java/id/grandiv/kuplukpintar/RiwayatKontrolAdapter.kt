@@ -8,12 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
 
+interface OnKontrolClickListener {
+    fun onKontrolClick(riwayatKontrol: RiwayatKontrol)
+}
 class RiwayatKontrolAdapter(
-    private val riwayatKontrolList: MutableList<RiwayatKontrol>
+    private val riwayatKontrolList: MutableList<RiwayatKontrol>,
+    private val listener: JadwalKontrolFragment
 ) : RecyclerView.Adapter<RiwayatKontrolAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvTanggal: TextView = view.findViewById(R.id.tv_tanggal)
+        val tvTempat: TextView = view.findViewById(R.id.tv_tempat)
         val tvDokter: TextView = view.findViewById(R.id.tv_dokter)
         val tvPesan: TextView = view.findViewById(R.id.tv_pesan)
     }
@@ -27,9 +32,14 @@ class RiwayatKontrolAdapter(
         val riwayatKontrol = riwayatKontrolList[position]
         val dateFormat = SimpleDateFormat("HH:mm | dd-MM-yyyy", Locale.getDefault())
         val dateStr = dateFormat.format(riwayatKontrol.tanggal.toDate())
-        holder.tvTanggal.text = "Jam: $dateStr"
+        holder.tvTanggal.text = dateStr
+        holder.tvTempat.text = riwayatKontrol.tempat
         holder.tvDokter.text = "${riwayatKontrol.dokter}"
         holder.tvPesan.text = riwayatKontrol.pesan
+
+        holder.itemView.setOnClickListener{
+            listener.onKontrolClick(riwayatKontrol)
+        }
     }
 
     override fun getItemCount() = riwayatKontrolList.size

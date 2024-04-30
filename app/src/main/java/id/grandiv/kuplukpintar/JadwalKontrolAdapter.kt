@@ -8,10 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
+import id.grandiv.kuplukpintar.R
 
 class JadwalKontrolAdapter(
-    private val jadwalKontrolList: MutableList<JadwalKontrol>,
-    private val riwayatKontrolList: MutableList<RiwayatKontrol>
+    private val jadwalKontrolList: List<JadwalKontrol>,
+    private val onCheckList: (JadwalKontrol) -> Unit
 ) : RecyclerView.Adapter<JadwalKontrolAdapter.ViewHolder>() {
 
 
@@ -33,16 +34,11 @@ class JadwalKontrolAdapter(
         val jadwalKontrol = jadwalKontrolList[position]
         val dateFormat = SimpleDateFormat("HH:mm | dd-MM-yyyy", Locale.getDefault())
         val dateStr = dateFormat.format(jadwalKontrol.tanggal.toDate())
-        holder.tvTanggal.text = "$dateStr"
+        holder.tvTanggal.text = dateStr
         holder.tvTempat.text = "Rumah Sakit: ${jadwalKontrol.tempat}"
         holder.tvDokter.text = "${jadwalKontrol.dokter}"
         holder.tvPesan.text = "${jadwalKontrol.pesan}"
-        holder.btnChecklist.setOnClickListener {
-            val riwayatKontrol = RiwayatKontrol(jadwalKontrol.tanggal, jadwalKontrol.tempat, jadwalKontrol.dokter, jadwalKontrol.pesan)
-            riwayatKontrolList.add(riwayatKontrol)
-            jadwalKontrolList.removeAt(position)
-            notifyDataSetChanged()
-        }
+        holder.btnChecklist.setOnClickListener { onCheckList(jadwalKontrol) }
     }
 
     override fun getItemCount() = jadwalKontrolList.size

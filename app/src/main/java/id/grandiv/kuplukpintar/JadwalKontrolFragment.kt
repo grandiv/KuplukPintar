@@ -1,3 +1,4 @@
+package id.grandiv.kuplukpintar
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -6,70 +7,54 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import id.grandiv.kuplukpintar.JadwalKontrol
-import id.grandiv.kuplukpintar.JadwalKontrolAdapter
 import id.grandiv.kuplukpintar.RiwayatKontrol
 import id.grandiv.kuplukpintar.RiwayatKontrolAdapter
 import id.grandiv.kuplukpintar.R
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import com.google.firebase.Timestamp
 
 class JadwalKontrolFragment : Fragment() {
+    private lateinit var db: FirebaseFirestore
+    private lateinit var jadwalKontrolRecyclerView: RecyclerView
+    private lateinit var riwayatKontrolRecyclerView: RecyclerView
     private lateinit var jadwalKontrolList: MutableList<JadwalKontrol>
     private lateinit var riwayatKontrolList: MutableList<RiwayatKontrol>
     private lateinit var jadwalKontrolAdapter: JadwalKontrolAdapter
     private lateinit var riwayatKontrolAdapter: RiwayatKontrolAdapter
-    private var db = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_jadwal_kontrol, container, false)
 
         db = Firebase.firestore
 
+        jadwalKontrolRecyclerView = view.findViewById(R.id.recyclerViewJadwal)
+        jadwalKontrolRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        riwayatKontrolRecyclerView = view.findViewById(R.id.recyclerViewRiwayat)
+        riwayatKontrolRecyclerView.layoutManager = LinearLayoutManager(context)
+
         jadwalKontrolList = mutableListOf()
         riwayatKontrolList = mutableListOf()
-        jadwalKontrolAdapter = JadwalKontrolAdapter(jadwalKontrolList, riwayatKontrolList)
-        riwayatKontrolAdapter = RiwayatKontrolAdapter(riwayatKontrolList)
 
-        val recyclerViewJadwal = view.findViewById<RecyclerView>(R.id.recyclerViewJadwal)
-        recyclerViewJadwal.layoutManager = LinearLayoutManager(requireContext())
-        recyclerViewJadwal.adapter = jadwalKontrolAdapter
+        jadwalKontrolAdapter = JadwalKontrolAdapter(jadwalKontrolList, ::checklistJadwalKontrol)
+        jadwalKontrolRecyclerView.adapter = jadwalKontrolAdapter
 
-        val recyclerViewRiwayat = view.findViewById<RecyclerView>(R.id.recyclerViewRiwayat)
-        recyclerViewRiwayat.layoutManager = LinearLayoutManager(requireContext())
-        recyclerViewRiwayat.adapter = riwayatKontrolAdapter
-
-        db.collection("jadwal kontrol rutin")
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val jadwalKontrol = document.toObject(JadwalKontrol::class.java)
-                    jadwalKontrolList.add(jadwalKontrol)
-                }
-                jadwalKontrolAdapter.notifyDataSetChanged()
-            }
-
-        db.collection("riwayat kontrol")
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val riwayatKontrol = document.toObject(RiwayatKontrol::class.java)
-                    riwayatKontrolList.add(riwayatKontrol)
-                }
-                riwayatKontrolAdapter.notifyDataSetChanged()
-            }
+        riwayatKontrolAdapter = RiwayatKontrolAdapter(riwayatKontrolList, this)
+        riwayatKontrolRecyclerView.adapter = riwayatKontrolAdapter
 
         val addButton = view.findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener {
@@ -80,6 +65,34 @@ class JadwalKontrolFragment : Fragment() {
         editButton.setOnClickListener {
             // Edit the currently selected checkup schedule
         }
+
+        db.collection("riwayat kontrol")
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val riwayatKontrol = document.toObject(RiwayatKontrol::class.java)
+                    riwayatKontrolList.add(riwayatKontrol)
+                }
+                riwayatKontrolAdapter.notifyDataSetChanged()
+
+                // After fetching the accepted patients, fetch the patient requests
+                db.collection("jadwal kontrol rutin")
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            val jadwalKontrol = document.toObject(JadwalKontrol::class.java)
+
+                            // Check if the patient request is already in the accepted patients list
+                            val isAlreadyKontrol = riwayatKontrolList.any { it.tanggal == jadwalKontrol.tanggal }
+
+                            // If the patient request is not already accepted, add it to the list
+                            if (!isAlreadyKontrol) {
+                                jadwalKontrolList.add(jadwalKontrol)
+                            }
+                        }
+                        jadwalKontrolAdapter.notifyDataSetChanged()
+                    }
+            }
 
         return view
     }
@@ -114,25 +127,69 @@ class JadwalKontrolFragment : Fragment() {
         }
 
         builder.setPositiveButton("Save") { dialogInterface, i ->
-            val tanggal = com.google.firebase.Timestamp(calendar.time)
+            val tanggalStr = editTextTanggal.text.toString()
             val tempat = editTextTempat.text.toString()
             val dokter = editTextDokter.text.toString()
             val pesan = editTextPesan.text.toString()
-            val jadwalKontrol = JadwalKontrol(tanggal, tempat, dokter, pesan)
-            jadwalKontrolList.add(jadwalKontrol)
-            jadwalKontrolAdapter.notifyDataSetChanged()
-            riwayatKontrolAdapter.notifyDataSetChanged()
+            if (pesan.isEmpty()) {
+                Toast.makeText(context, "Pesan cannot be empty", Toast.LENGTH_SHORT).show()
+            } else {
+                // Convert the String date to a Timestamp
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val date = dateFormat.parse(tanggalStr)
+                val tanggal = Timestamp(date.time / 1000, 0)
 
-            // Add the new JadwalKontrol to the Firestore database
-            db.collection("jadwal kontrol rutin")
-                .add(jadwalKontrol)
-                .addOnSuccessListener { documentReference ->
-                    // Document was added successfully
-                }
-                .addOnFailureListener { e ->
-                    // Handle the error
-                }
+                val jadwalKontrol = JadwalKontrol(tanggal, tempat, dokter, pesan)
+                jadwalKontrolList.add(jadwalKontrol)
+                jadwalKontrolAdapter.notifyDataSetChanged()
+                riwayatKontrolAdapter.notifyDataSetChanged()
+
+                // Add the new JadwalKontrol to the Firestore database
+                db.collection("jadwal kontrol rutin")
+                    .add(jadwalKontrol)
+                    .addOnSuccessListener { documentReference ->
+                        // Document was added successfully
+                    }
+                    .addOnFailureListener { e ->
+                        // Handle the error
+                    }
+            }
         }
         builder.show()
+    }
+
+    private fun checklistJadwalKontrol(jadwalKontrol: JadwalKontrol){
+        val riwayatKontrol = RiwayatKontrol(jadwalKontrol.tanggal, jadwalKontrol.tempat, jadwalKontrol.dokter, jadwalKontrol.pesan)
+        riwayatKontrolList.add(riwayatKontrol)
+        riwayatKontrolAdapter.notifyDataSetChanged()
+        jadwalKontrolList.remove(jadwalKontrol)
+        jadwalKontrolAdapter.notifyDataSetChanged()
+
+        // Add the new RiwayatKontrol to the Firestore database
+        db.collection("riwayat kontrol")
+            .add(riwayatKontrol)
+            .addOnSuccessListener { documentReference ->
+                // Document was added successfully
+            }
+            .addOnFailureListener { e ->
+                // Handle the error
+            }
+
+        // Remove the JadwalKontrol from the Firestore database
+        db.collection("jadwal kontrol rutin")
+            .whereEqualTo("tanggal", jadwalKontrol.tanggal)
+            .whereEqualTo("tempat", jadwalKontrol.tempat)
+            .whereEqualTo("dokter", jadwalKontrol.dokter)
+            .whereEqualTo("pesan", jadwalKontrol.pesan)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    document.reference.delete()
+                }
+            }
+    }
+
+    fun onKontrolClick(riwayatKontrol: RiwayatKontrol) {
+        TODO("Not yet implemented")
     }
 }
