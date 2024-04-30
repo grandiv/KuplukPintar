@@ -1,7 +1,5 @@
 package id.grandiv.kuplukpintar
 
-import androidx.lifecycle.LiveData
-
 class PatientRequest() {
     lateinit var name: String
     lateinit var email: String

@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RiwayatKontrolAdapter(
-    private val riwayatKontrolList: List<RiwayatKontrol>
+    private val riwayatKontrolList: MutableList<RiwayatKontrol>
 ) : RecyclerView.Adapter<RiwayatKontrolAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

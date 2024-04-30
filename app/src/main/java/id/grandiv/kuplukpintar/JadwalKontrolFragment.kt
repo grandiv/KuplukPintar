@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -23,10 +24,11 @@ import java.util.Date
 import java.util.Locale
 
 class JadwalKontrolFragment : Fragment() {
-    private lateinit var db: FirebaseFirestore
+    private lateinit var jadwalKontrolList: MutableList<JadwalKontrol>
+    private lateinit var riwayatKontrolList: MutableList<RiwayatKontrol>
     private lateinit var jadwalKontrolAdapter: JadwalKontrolAdapter
     private lateinit var riwayatKontrolAdapter: RiwayatKontrolAdapter
-    val jadwalKontrolList = mutableListOf<JadwalKontrol>()
+    private var db = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,11 +38,18 @@ class JadwalKontrolFragment : Fragment() {
 
         db = Firebase.firestore
 
-        val jadwalKontrolList = mutableListOf<JadwalKontrol>()
-        jadwalKontrolAdapter = JadwalKontrolAdapter(jadwalKontrolList)
+        jadwalKontrolList = mutableListOf()
+        riwayatKontrolList = mutableListOf()
+        jadwalKontrolAdapter = JadwalKontrolAdapter(jadwalKontrolList, riwayatKontrolList)
+        riwayatKontrolAdapter = RiwayatKontrolAdapter(riwayatKontrolList)
 
         val recyclerViewJadwal = view.findViewById<RecyclerView>(R.id.recyclerViewJadwal)
+        recyclerViewJadwal.layoutManager = LinearLayoutManager(requireContext())
         recyclerViewJadwal.adapter = jadwalKontrolAdapter
+
+        val recyclerViewRiwayat = view.findViewById<RecyclerView>(R.id.recyclerViewRiwayat)
+        recyclerViewRiwayat.layoutManager = LinearLayoutManager(requireContext())
+        recyclerViewRiwayat.adapter = riwayatKontrolAdapter
 
         db.collection("jadwal kontrol rutin")
             .get()
@@ -51,12 +60,6 @@ class JadwalKontrolFragment : Fragment() {
                 }
                 jadwalKontrolAdapter.notifyDataSetChanged()
             }
-
-        val riwayatKontrolList = mutableListOf<RiwayatKontrol>()
-        riwayatKontrolAdapter = RiwayatKontrolAdapter(riwayatKontrolList)
-
-        val recyclerViewRiwayat = view.findViewById<RecyclerView>(R.id.recyclerViewRiwayat)
-        recyclerViewRiwayat.adapter = riwayatKontrolAdapter
 
         db.collection("riwayat kontrol")
             .get()
@@ -118,6 +121,17 @@ class JadwalKontrolFragment : Fragment() {
             val jadwalKontrol = JadwalKontrol(tanggal, tempat, dokter, pesan)
             jadwalKontrolList.add(jadwalKontrol)
             jadwalKontrolAdapter.notifyDataSetChanged()
+            riwayatKontrolAdapter.notifyDataSetChanged()
+
+            // Add the new JadwalKontrol to the Firestore database
+            db.collection("jadwal kontrol rutin")
+                .add(jadwalKontrol)
+                .addOnSuccessListener { documentReference ->
+                    // Document was added successfully
+                }
+                .addOnFailureListener { e ->
+                    // Handle the error
+                }
         }
         builder.show()
     }
