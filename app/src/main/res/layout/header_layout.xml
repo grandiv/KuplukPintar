@@ -8,7 +8,7 @@
         android:id="@+id/logo"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/sh_logo"
         />
 
     <TextView

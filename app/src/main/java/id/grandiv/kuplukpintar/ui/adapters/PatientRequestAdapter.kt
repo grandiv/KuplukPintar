@@ -1,4 +1,4 @@
-package id.grandiv.kuplukpintar
+package id.grandiv.kuplukpintar.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import id.grandiv.kuplukpintar.models.PatientRequest
+import id.grandiv.kuplukpintar.R
 
 class PatientRequestAdapter(
     private val patientRequests: List<PatientRequest>,

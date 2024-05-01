@@ -1,10 +1,13 @@
-package id.grandiv.kuplukpintar
+package id.grandiv.kuplukpintar.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import id.grandiv.kuplukpintar.R
+import id.grandiv.kuplukpintar.models.RiwayatKontrol
+import id.grandiv.kuplukpintar.ui.fragments.JadwalKontrolFragment
 import java.text.SimpleDateFormat
 import java.util.*
 

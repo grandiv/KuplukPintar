@@ -7,7 +7,7 @@
     android:gravity="center"
     android:background="@color/white"
     android:padding="16dp"
-    tools:context=".DaftarActivity">
+    tools:context=".ui.activities.DaftarActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Daftar sebagai Dokter"
-            android:background="@drawable/rounded_corner_button"
+            android:background="@drawable/sh_rounded_corner_button"
             android:textColor="@color/white"
             android:padding="18dp"
             android:layout_marginTop="32dp"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Daftar sebagai Pasien"
-            android:background="@drawable/rounded_corner_button"
+            android:background="@drawable/sh_rounded_corner_button"
             android:textColor="@color/white"
             android:padding="18dp"
             android:layout_marginTop="16dp"

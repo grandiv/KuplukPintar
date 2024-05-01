@@ -1,14 +1,19 @@
-package id.grandiv.kuplukpintar
+package id.grandiv.kuplukpintar.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import id.grandiv.kuplukpintar.models.PatientRequest
+import id.grandiv.kuplukpintar.R
+import id.grandiv.kuplukpintar.models.AcceptedPatient
+import id.grandiv.kuplukpintar.ui.adapters.AcceptedPatientAdapter
+import id.grandiv.kuplukpintar.ui.adapters.OnPatientClickListener
+import id.grandiv.kuplukpintar.ui.adapters.PatientRequestAdapter
 
 class DokterDaftarPasienActivity : AppCompatActivity(), OnPatientClickListener {
     private lateinit var db: FirebaseFirestore

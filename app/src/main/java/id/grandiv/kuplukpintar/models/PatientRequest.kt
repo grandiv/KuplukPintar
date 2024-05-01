@@ -1,6 +1,6 @@
-package id.grandiv.kuplukpintar
+package id.grandiv.kuplukpintar.models
 
-class AcceptedPatient() {
+class PatientRequest() {
     lateinit var name: String
     lateinit var email: String
     lateinit var address: String

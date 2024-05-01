@@ -1,8 +1,6 @@
-package id.grandiv.kuplukpintar
-
+package id.grandiv.kuplukpintar.models
 import com.google.firebase.Timestamp
-
-class RiwayatKontrol() {
+class JadwalKontrol() {
     lateinit var tanggal: Timestamp
     lateinit var tempat: String
     lateinit var dokter: String

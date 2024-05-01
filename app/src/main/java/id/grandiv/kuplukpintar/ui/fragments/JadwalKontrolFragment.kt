@@ -1,4 +1,4 @@
-package id.grandiv.kuplukpintar
+package id.grandiv.kuplukpintar.ui.fragments
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -14,14 +14,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import id.grandiv.kuplukpintar.RiwayatKontrol
-import id.grandiv.kuplukpintar.RiwayatKontrolAdapter
-import id.grandiv.kuplukpintar.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 import com.google.firebase.Timestamp
+import id.grandiv.kuplukpintar.models.JadwalKontrol
+import id.grandiv.kuplukpintar.ui.adapters.JadwalKontrolAdapter
+import id.grandiv.kuplukpintar.R
+import id.grandiv.kuplukpintar.models.RiwayatKontrol
+import id.grandiv.kuplukpintar.ui.adapters.RiwayatKontrolAdapter
 
 class JadwalKontrolFragment : Fragment() {
     private lateinit var db: FirebaseFirestore

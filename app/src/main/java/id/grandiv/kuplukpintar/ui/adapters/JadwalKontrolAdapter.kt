@@ -1,4 +1,4 @@
-package id.grandiv.kuplukpintar
+package id.grandiv.kuplukpintar.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import id.grandiv.kuplukpintar.models.JadwalKontrol
 import java.text.SimpleDateFormat
 import java.util.*
 import id.grandiv.kuplukpintar.R

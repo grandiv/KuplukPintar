@@ -1,10 +1,10 @@
-package id.grandiv.kuplukpintar
+package id.grandiv.kuplukpintar.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
+import id.grandiv.kuplukpintar.R
 
 class DaftarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

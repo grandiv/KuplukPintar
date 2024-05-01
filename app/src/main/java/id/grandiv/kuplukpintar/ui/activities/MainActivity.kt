@@ -1,4 +1,4 @@
-package id.grandiv.kuplukpintar
+package id.grandiv.kuplukpintar.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +13,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import id.grandiv.kuplukpintar.ui.fragments.AkunFragment
+import id.grandiv.kuplukpintar.ui.fragments.HomeFragment
+import id.grandiv.kuplukpintar.ui.fragments.JadwalObatFragment
+import id.grandiv.kuplukpintar.R
+import id.grandiv.kuplukpintar.ui.fragments.RiwayatFragment
+import id.grandiv.kuplukpintar.ui.fragments.JadwalKontrolFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
@@ -34,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val menu = findViewById<Button>(R.id.patientlist)
 
         // Set the logo
-        logo.setImageResource(R.drawable.logo)
+        logo.setImageResource(R.drawable.sh_logo)
 
         // Get the email and user type from the intent extras
         val email = intent.getStringExtra("email")
