@@ -1,6 +1,7 @@
 package id.grandiv.kuplukpintar.ui.fragments
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -62,11 +63,6 @@ class JadwalKontrolFragment : Fragment() {
             showAddJadwalDialog()
         }
 
-        val editButton = view.findViewById<Button>(R.id.editButton)
-        editButton.setOnClickListener {
-            // Edit the currently selected checkup schedule
-        }
-
         db.collection("riwayat kontrol")
             .get()
             .addOnSuccessListener { documents ->
@@ -115,16 +111,30 @@ class JadwalKontrolFragment : Fragment() {
             requireContext(),
             { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)
-                val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(calendar.time)
-                editTextTanggal.setText(date)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
 
+        val timePickerDialog = TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+                val date = SimpleDateFormat("HH:mm | dd-MM-yyyy", Locale.getDefault()).format(calendar.time)
+                editTextTanggal.setText(date)
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true // 24 hour time
+        )
+
         editTextTanggal.setOnClickListener {
             datePickerDialog.show()
+            datePickerDialog.setOnDismissListener {
+                timePickerDialog.show()
+            }
         }
 
         builder.setPositiveButton("Save") { dialogInterface, i ->
@@ -136,7 +146,7 @@ class JadwalKontrolFragment : Fragment() {
                 Toast.makeText(context, "Pesan cannot be empty", Toast.LENGTH_SHORT).show()
             } else {
                 // Convert the String date to a Timestamp
-                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val dateFormat = SimpleDateFormat("HH:mm | dd-MM-yyyy", Locale.getDefault())
                 val date = dateFormat.parse(tanggalStr)
                 val tanggal = Timestamp(date.time / 1000, 0)
 
@@ -188,9 +198,5 @@ class JadwalKontrolFragment : Fragment() {
                     document.reference.delete()
                 }
             }
-    }
-
-    fun onKontrolClick(riwayatKontrol: RiwayatKontrol) {
-        TODO("Not yet implemented")
     }
 }

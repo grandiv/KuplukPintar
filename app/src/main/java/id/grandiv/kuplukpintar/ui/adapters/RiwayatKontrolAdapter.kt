@@ -11,9 +11,6 @@ import id.grandiv.kuplukpintar.ui.fragments.JadwalKontrolFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
-interface OnKontrolClickListener {
-    fun onKontrolClick(riwayatKontrol: RiwayatKontrol)
-}
 class RiwayatKontrolAdapter(
     private val riwayatKontrolList: MutableList<RiwayatKontrol>,
     private val listener: JadwalKontrolFragment
@@ -39,10 +36,6 @@ class RiwayatKontrolAdapter(
         holder.tvTempat.text = riwayatKontrol.tempat
         holder.tvDokter.text = "${riwayatKontrol.dokter}"
         holder.tvPesan.text = riwayatKontrol.pesan
-
-        holder.itemView.setOnClickListener{
-            listener.onKontrolClick(riwayatKontrol)
-        }
     }
 
     override fun getItemCount() = riwayatKontrolList.size

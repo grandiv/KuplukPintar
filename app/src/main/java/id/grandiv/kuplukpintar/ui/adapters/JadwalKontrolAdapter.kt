@@ -36,9 +36,9 @@ class JadwalKontrolAdapter(
         val dateFormat = SimpleDateFormat("HH:mm | dd-MM-yyyy", Locale.getDefault())
         val dateStr = dateFormat.format(jadwalKontrol.tanggal.toDate())
         holder.tvTanggal.text = dateStr
-        holder.tvTempat.text = "Rumah Sakit: ${jadwalKontrol.tempat}"
-        holder.tvDokter.text = "${jadwalKontrol.dokter}"
-        holder.tvPesan.text = "${jadwalKontrol.pesan}"
+        holder.tvTempat.text = jadwalKontrol.tempat
+        holder.tvDokter.text = jadwalKontrol.dokter
+        holder.tvPesan.text = jadwalKontrol.pesan
         holder.btnChecklist.setOnClickListener { onCheckList(jadwalKontrol) }
     }
 
