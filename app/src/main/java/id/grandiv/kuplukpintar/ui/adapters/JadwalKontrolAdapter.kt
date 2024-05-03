@@ -13,7 +13,8 @@ import id.grandiv.kuplukpintar.R
 
 class JadwalKontrolAdapter(
     private val jadwalKontrolList: List<JadwalKontrol>,
-    private val onCheckList: (JadwalKontrol) -> Unit
+    private val onCheckList: (JadwalKontrol) -> Unit,
+
 ) : RecyclerView.Adapter<JadwalKontrolAdapter.ViewHolder>() {
 
 
@@ -40,6 +41,7 @@ class JadwalKontrolAdapter(
         holder.tvDokter.text = jadwalKontrol.dokter
         holder.tvPesan.text = jadwalKontrol.pesan
         holder.btnChecklist.setOnClickListener { onCheckList(jadwalKontrol) }
+
     }
 
     override fun getItemCount() = jadwalKontrolList.size
