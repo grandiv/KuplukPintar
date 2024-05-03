@@ -52,7 +52,7 @@ class JadwalKontrolFragment : Fragment() {
         jadwalKontrolList = mutableListOf()
         riwayatKontrolList = mutableListOf()
 
-        jadwalKontrolAdapter = JadwalKontrolAdapter(jadwalKontrolList, ::checklistJadwalKontrol)
+        jadwalKontrolAdapter = JadwalKontrolAdapter(jadwalKontrolList, ::checklistJadwalKontrol, ::editJadwalKontrol)
         jadwalKontrolRecyclerView.adapter = jadwalKontrolAdapter
 
         riwayatKontrolAdapter = RiwayatKontrolAdapter(riwayatKontrolList, this)
@@ -78,7 +78,7 @@ class JadwalKontrolFragment : Fragment() {
                     .addOnSuccessListener { documents ->
                         for (document in documents) {
                             val jadwalKontrol = document.toObject(JadwalKontrol::class.java)
-
+                            jadwalKontrol.id = document.id
                             // Check if the patient request is already in the accepted patients list
                             val isAlreadyKontrol = riwayatKontrolList.any { it.tanggal == jadwalKontrol.tanggal }
 
@@ -150,7 +150,7 @@ class JadwalKontrolFragment : Fragment() {
                 val date = dateFormat.parse(tanggalStr)
                 val tanggal = Timestamp(date.time / 1000, 0)
 
-                val jadwalKontrol = JadwalKontrol(tanggal, tempat, dokter, pesan)
+                val jadwalKontrol = JadwalKontrol("", tanggal, tempat, dokter, pesan)
                 jadwalKontrolList.add(jadwalKontrol)
                 jadwalKontrolAdapter.notifyDataSetChanged()
                 riwayatKontrolAdapter.notifyDataSetChanged()
@@ -160,6 +160,9 @@ class JadwalKontrolFragment : Fragment() {
                     .add(jadwalKontrol)
                     .addOnSuccessListener { documentReference ->
                         // Document was added successfully
+                        // Set the id property to the document ID and update the document
+                        jadwalKontrol.id = documentReference.id
+                        documentReference.set(jadwalKontrol)
                     }
                     .addOnFailureListener { e ->
                         // Handle the error
@@ -188,16 +191,63 @@ class JadwalKontrolFragment : Fragment() {
 
         // Remove the JadwalKontrol from the Firestore database
         db.collection("jadwal kontrol rutin")
-            .whereEqualTo("tanggal", jadwalKontrol.tanggal)
-            .whereEqualTo("tempat", jadwalKontrol.tempat)
-            .whereEqualTo("dokter", jadwalKontrol.dokter)
-            .whereEqualTo("pesan", jadwalKontrol.pesan)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    document.reference.delete()
-                }
+            .document(jadwalKontrol.id)
+            .delete()
+            .addOnSuccessListener {
+                // Document was deleted successfully
+            }
+            .addOnFailureListener { e ->
+                // Handle the error
             }
     }
+    private fun editJadwalKontrol(jadwalKontrol: JadwalKontrol) {
+        val builder = AlertDialog.Builder(context)
+        val inflater = layoutInflater
+        builder.setTitle("Edit Jadwal Kontrol")
+        val dialogLayout = inflater.inflate(R.layout.dialog_add_jadwal, null)
+        val editTextTanggal  = dialogLayout.findViewById<EditText>(R.id.editTextTanggal)
+        val editTextTempat  = dialogLayout.findViewById<EditText>(R.id.editTextTempat)
+        val editTextDokter  = dialogLayout.findViewById<EditText>(R.id.editTextDokter)
+        val editTextPesan  = dialogLayout.findViewById<EditText>(R.id.editTextPesan)
+        builder.setView(dialogLayout)
 
+        // Populate the dialog with the current JadwalKontrol data
+        val dateFormat = SimpleDateFormat("HH:mm | dd-MM-yyyy", Locale.getDefault())
+        editTextTanggal.setText(dateFormat.format(jadwalKontrol.tanggal.toDate()))
+        editTextTempat.setText(jadwalKontrol.tempat)
+        editTextDokter.setText(jadwalKontrol.dokter)
+        editTextPesan.setText(jadwalKontrol.pesan)
+
+        builder.setPositiveButton("Save") { dialogInterface, i ->
+            val tanggalStr = editTextTanggal.text.toString()
+            val tempat = editTextTempat.text.toString()
+            val dokter = editTextDokter.text.toString()
+            val pesan = editTextPesan.text.toString()
+            if (pesan.isEmpty()) {
+                Toast.makeText(context, "Pesan cannot be empty", Toast.LENGTH_SHORT).show()
+            } else {
+                // Convert the String date to a Timestamp
+                val date = dateFormat.parse(tanggalStr)
+                val tanggal = Timestamp(date.time / 1000, 0)
+
+                // Update the JadwalKontrol object
+                jadwalKontrol.tanggal = tanggal
+                jadwalKontrol.tempat = tempat
+                jadwalKontrol.dokter = dokter
+                jadwalKontrol.pesan = pesan
+
+                // Update the JadwalKontrol in the Firestore database
+                db.collection("jadwal kontrol rutin")
+                    .document(jadwalKontrol.id) // Assuming JadwalKontrol has an 'id' property
+                    .set(jadwalKontrol)
+                    .addOnSuccessListener {
+                        // Document was updated successfully
+                    }
+                    .addOnFailureListener { e ->
+                        // Handle the error
+                    }
+            }
+        }
+        builder.show()
+    }
 }
