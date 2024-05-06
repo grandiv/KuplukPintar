@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Color when a menu item is selected -->
+    <item android:color="#11499C" android:state_checked="true" />
+    <!-- Default color -->
+    <item android:color="#000000" />
+</selector>

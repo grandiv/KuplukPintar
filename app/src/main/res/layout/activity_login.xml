@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:background="@color/white"
-    android:padding="16dp"
     tools:context=".ui.activities.SignInActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:padding="16dp"
         android:orientation="vertical">
         <TextView
             android:fontFamily="@font/poppinsregular"
@@ -139,5 +139,29 @@
                 android:textColor="#1a5e94"
                 android:text="Daftar" />
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="300dp"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="1700dp"
+            android:layout_height="850dp"
+            android:src="@drawable/gelombang1"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="350dp"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="1700dp"
+            android:layout_height="850dp"
+            android:src="@drawable/gelombang2"
+            />
     </LinearLayout>
 </RelativeLayout>

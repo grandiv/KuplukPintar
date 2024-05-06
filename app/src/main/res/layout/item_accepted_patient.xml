@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Patient Name"
+        android:textColor="@color/black"
         android:fontFamily="@font/poppinsregular"/>
 
     <TextView
@@ -19,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Patient Address"
+        android:textColor="@color/black"
         android:fontFamily="@font/poppinsregular"/>
 
     <TextView
@@ -26,5 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Patient Phone Number"
+        android:textColor="@color/black"
         android:fontFamily="@font/poppinsregular"/>
 </LinearLayout>

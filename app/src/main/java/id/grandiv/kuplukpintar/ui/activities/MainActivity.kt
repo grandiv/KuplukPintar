@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val menu = findViewById<Button>(R.id.patientlist)
 
         // Set the logo
-        logo.setImageResource(R.drawable.sh_logo)
+        logo.setImageResource(R.mipmap.ic_logo)
 
         // Get the email and user type from the intent extras
         val email = intent.getStringExtra("email")
@@ -58,19 +58,30 @@ class MainActivity : AppCompatActivity() {
             transaction.commit()
         }
 
-        // Query the Firestore database to get the user name
-        if (role != null) {
-            db.collection(role)
-                .whereEqualTo("akun.email", email)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        val user = documents.documents[0]
-                        val userNameValue = (user["akun"] as Map<*, *>)["nama lengkap"] as String
-                        userName.text = userNameValue
-                    }
+        // Query the Firestore database to get the user name and display it on the header
+        db.collection("pasien")
+            .whereEqualTo("akun.email", email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val user = documents.documents[0]
+                    val userNameValue = (user["akun"] as Map<*, *>)["nama lengkap"] as String
+                    userName.text = userNameValue
                 }
-        }
+            }
+        // SALAH karena dia ngambil role sehingga kalau login pake akun dokter, namanya ga muncul
+//        if (role != null) {
+//            db.collection(role)
+//                .whereEqualTo("akun.email", email)
+//                .get()
+//                .addOnSuccessListener { documents ->
+//                    if (!documents.isEmpty) {
+//                        val user = documents.documents[0]
+//                        val userNameValue = (user["akun"] as Map<*, *>)["nama lengkap"] as String
+//                        userName.text = userNameValue
+//                    }
+//                }
+//        }
 
         // Set the menu click listener
         menu.setOnClickListener {
