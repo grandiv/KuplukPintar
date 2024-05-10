@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextObat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nama Obat (cth: Lyrica)" />
+
+    <EditText
+        android:id="@+id/editTextKadar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Kadar (cth: 100mg)" />
+
+    <EditText
+        android:id="@+id/editTextKuantitas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Kuantitas (cth: 1 Kapsul)" />
+
+    <EditText
+        android:id="@+id/editTextJam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Jam (cth: 09:00)" />
+
+    <EditText
+        android:id="@+id/editTextKapan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Kapan (cth: Setelah Makan)" />
+
+</LinearLayout>
