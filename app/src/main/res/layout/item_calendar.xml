@@ -8,18 +8,23 @@
         android:id="@+id/tv_day_of_week"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:fontFamily="@font/poppinsregular"
+        android:textColor="#1A5E94"/>
 
     <TextView
         android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:layout_marginTop="20dp" />
+        android:textSize="16sp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="8dp"
+        android:fontFamily="@font/poppinsregular" />
 
     <View
         android:id="@+id/view_current_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/blue_circle" />
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="25dp"
+        android:visibility="gone" />
 </FrameLayout>

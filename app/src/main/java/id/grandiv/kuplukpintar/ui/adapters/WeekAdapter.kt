@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import id.grandiv.kuplukpintar.R
 import id.grandiv.kuplukpintar.models.Day
+import android.graphics.Color
 
 class WeekAdapter(private val weekDays: List<Day>) : RecyclerView.Adapter<WeekAdapter.WeekViewHolder>() {
 
@@ -25,7 +26,14 @@ class WeekAdapter(private val weekDays: List<Day>) : RecyclerView.Adapter<WeekAd
         val day = weekDays[position]
         holder.tvDayOfWeek.text = day.dayOfWeek
         holder.tvDate.text = day.date
-        holder.viewCurrentDate.visibility = if (day.isCurrentDate) View.VISIBLE else View.GONE
+        if (day.isCurrentDate) {
+            holder.viewCurrentDate.setBackgroundResource(R.drawable.blue_circle)
+            holder.viewCurrentDate.visibility = View.VISIBLE
+            holder.tvDate.setTextColor(Color.parseColor("#FFFFFF"))
+        } else {
+            holder.viewCurrentDate.visibility = View.GONE
+            holder.tvDate.setTextColor(Color.parseColor("#1A5E94"))
+        }
     }
 
     override fun getItemCount() = weekDays.size
