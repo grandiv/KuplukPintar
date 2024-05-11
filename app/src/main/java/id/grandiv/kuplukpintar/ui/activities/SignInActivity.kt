@@ -53,6 +53,14 @@ class SignInActivity : AppCompatActivity() {
                                     val pasien = pasienDocuments.documents[0]
                                     val pasienPassword = (pasien["akun"] as Map<*, *>)["password"] as String
                                     if (pasienPassword == password) {
+                                        // Save the logged-in user's email and role to shared preferences
+                                        val sharedPref = getSharedPreferences("MyPref", MODE_PRIVATE)
+                                        with (sharedPref.edit()) {
+                                            putString("loggedInRole", "pasien")
+                                            putString("loggedInEmail", email)
+                                            apply()
+                                        }
+
                                         // Redirect to HomeFragment in MainActivity
                                         val intent = Intent(this, MainActivity::class.java)
                                         intent.putExtra("email", email)
@@ -69,6 +77,14 @@ class SignInActivity : AppCompatActivity() {
                         val dokter = documents.documents[0]
                         val dokterPassword = (dokter["akun"] as Map<*, *>)["password"] as String
                         if (dokterPassword == password) {
+                            // Save the logged-in user's email and role to shared preferences
+                            val sharedPref = getSharedPreferences("MyPref", MODE_PRIVATE)
+                            with (sharedPref.edit()) {
+                                putString("loggedInRole", "dokter")
+                                putString("loggedInEmail", email)
+                                apply()
+                            }
+
                             // Redirect to DokterDaftarPasienActivity
                             val intent = Intent(this, DokterDaftarPasienActivity::class.java)
                             intent.putExtra("email", email)

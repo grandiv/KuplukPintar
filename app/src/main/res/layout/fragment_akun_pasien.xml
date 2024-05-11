@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f2f1f6">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="225dp"
+                android:background="#1A5E94">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="64dp"
+                    android:text="Profile"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:srcCompat="@drawable/arc_3" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/imageView"
+                    app:srcCompat="@drawable/ic_profile_solid" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <EditText
+                    android:id="@+id/editTextNamaLengkap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="18dp"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:background="@drawable/sh_rounded_grey_border"
+                    android:layout_marginBottom="16dp"/>
+
+                <EditText
+                    android:id="@+id/editTextAlamatLengkap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="18dp"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:background="@drawable/sh_rounded_grey_border"
+                    android:layout_marginBottom="16dp"/>
+
+                <EditText
+                    android:id="@+id/editTextNomorTelepon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="18dp"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:background="@drawable/sh_rounded_grey_border"
+                    android:layout_marginBottom="16dp"/>
+
+                <EditText
+                    android:id="@+id/editTextEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="18dp"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:background="@drawable/sh_rounded_grey_border"
+                    android:layout_marginBottom="16dp"/>
+
+                <EditText
+                    android:id="@+id/editTextPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="18dp"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:background="@drawable/sh_rounded_grey_border"
+                    android:layout_marginBottom="16dp"/>
+
+                <Spinner
+                    android:id="@+id/editSpinnerDokterPengawas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="18dp"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:background="@drawable/sh_rounded_grey_border"
+                    android:layout_marginBottom="16dp"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ubah Profil"
+                    android:background="@drawable/sh_rounded_corner_button"
+                    android:textColor="@color/white"
+                    android:padding="18dp"
+                    android:layout_marginTop="32dp"
+                    android:textSize="18sp"
+                    android:id="@+id/btnUbahProfil" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Log Out"
+                    android:background="@drawable/sh_rounded_blue_border"
+                    android:textColor="#1A5E94"
+                    android:padding="18dp"
+                    android:layout_marginTop="32dp"
+                    android:textSize="18sp"
+                    android:id="@+id/btnLogOut" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

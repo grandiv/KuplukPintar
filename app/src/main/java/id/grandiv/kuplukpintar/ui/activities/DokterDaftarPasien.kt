@@ -119,6 +119,13 @@ class DokterDaftarPasienActivity : AppCompatActivity(), OnPatientClickListener {
     }
 
     override fun onPatientClick(patient: AcceptedPatient) {
+        // Save the selected patient's email to shared preferences
+        val sharedPref = getSharedPreferences("MyPref", MODE_PRIVATE)
+        with (sharedPref.edit()) {
+            putString("selectedPatientEmail", patient.email)
+            apply()
+        }
+
         // Start MainActivity
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("email", patient.email)

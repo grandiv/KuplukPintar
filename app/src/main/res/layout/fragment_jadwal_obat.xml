@@ -34,17 +34,28 @@
             android:layout_marginTop="20dp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/addButton"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@drawable/ic_add" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/poppinsregular"
+            android:textColor="#1A5E94"
+            android:layout_alignParentEnd="true"
+            android:text="+ Add" />
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewJadwalObat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
-        android:paddingLeft="32dp"/>
+        android:paddingTop="0dp"
+        android:paddingLeft="16dp"
+        android:paddingBottom="16dp"
+        android:paddingRight="16dp"/>
 
 </LinearLayout>

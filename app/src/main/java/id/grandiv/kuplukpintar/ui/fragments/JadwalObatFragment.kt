@@ -91,16 +91,21 @@ class JadwalObatFragment : Fragment() {
     private fun getWeekDays(): List<Day> {
         val weekDays = mutableListOf<Day>()
         val calendar = Calendar.getInstance()
-        val today = calendar.get(Calendar.DAY_OF_WEEK)
-        calendar.add(Calendar.DAY_OF_YEAR, -today)
-        val currentDate = Calendar.getInstance()
+        val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+
+        // Set the calendar to the start of the week (Sunday)
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+
         for (i in 0 until 7) {
-            val dayOfWeek = SimpleDateFormat("EEE", Locale.getDefault()).format(calendar.time)
-            val date = SimpleDateFormat("d", Locale.getDefault()).format(calendar.time)
-            val isCurrentDate = isSameDay(currentDate, calendar)
+            val dayOfWeek = daysOfWeek[i]
+            val date = calendar.get(Calendar.DAY_OF_MONTH).toString()
+            val isCurrentDate = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == calendar.get(Calendar.DAY_OF_WEEK)
             weekDays.add(Day(dayOfWeek, date, isCurrentDate))
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
+
+            // Move the calendar to the next day
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
+
         return weekDays
     }
 

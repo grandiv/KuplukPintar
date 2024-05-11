@@ -19,6 +19,7 @@ import id.grandiv.kuplukpintar.ui.fragments.JadwalObatFragment
 import id.grandiv.kuplukpintar.R
 import id.grandiv.kuplukpintar.ui.fragments.RiwayatFragment
 import id.grandiv.kuplukpintar.ui.fragments.JadwalKontrolFragment
+import android.content.Context
 
 class MainActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             transaction.commit()
         }
 
-        // Query the Firestore database to get the user name and display it on the header
+        // Query the Firestore database to get the patient's name and display it on the header
         db.collection("pasien")
             .whereEqualTo("akun.email", email)
             .get()
