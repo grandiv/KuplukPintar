@@ -7,7 +7,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,15 +34,17 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="425dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/arc_3" />
 
                 <ImageView
                     android:id="@+id/imageView2"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="69dp"
+                    android:layout_height="69dp"
                     app:layout_constraintBottom_toTopOf="@+id/imageView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:padding="18dp"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:background="@drawable/sh_rounded_grey_border"
                     android:layout_marginBottom="16dp"/>
 
@@ -69,37 +72,37 @@
                     android:layout_height="wrap_content"
                     android:padding="18dp"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:background="@drawable/sh_rounded_grey_border"
                     android:layout_marginBottom="16dp"/>
 
                 <EditText
-                    android:id="@+id/editTextNomorTelepon"
+                    android:id="@+id/editTextNomorTeleponPasien"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="18dp"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:background="@drawable/sh_rounded_grey_border"
                     android:layout_marginBottom="16dp"/>
 
                 <EditText
-                    android:id="@+id/editTextEmail"
+                    android:id="@+id/editTextEmailPasien"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="18dp"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:background="@drawable/sh_rounded_grey_border"
                     android:layout_marginBottom="16dp"/>
 
                 <EditText
-                    android:id="@+id/editTextPassword"
+                    android:id="@+id/editTextPasswordPasien"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="18dp"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:background="@drawable/sh_rounded_grey_border"
                     android:layout_marginBottom="16dp"/>
 
@@ -122,7 +125,7 @@
                     android:padding="18dp"
                     android:layout_marginTop="32dp"
                     android:textSize="18sp"
-                    android:id="@+id/btnUbahProfil" />
+                    android:id="@+id/btnUbahProfilPasien" />
 
                 <Button
                     android:layout_width="match_parent"
