@@ -23,7 +23,7 @@ class HomeFragment : Fragment() {
     private lateinit var currentStatusTextView: TextView
     private lateinit var lastMicroseizureTextView: TextView
     private lateinit var lastSeizureTextView: TextView
-    private val eegData = mutableListOf<Entry>()
+    private val eegDataMap = mutableMapOf<String, MutableList<Entry>>()
     private var currentIndex = 0
     private lateinit var handler: Handler
     private lateinit var eegDataList: List<EEGData>
@@ -47,11 +47,16 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupChart() {
-        val dataSet = LineDataSet(eegData, "EEG Data")
-        dataSet.setDrawValues(false)
-        dataSet.setDrawCircles(false)
+        val lineData = LineData()
 
-        val lineData = LineData(dataSet)
+        for (channel in eegDataList[0].values.keys) {
+            val dataSet = LineDataSet(eegDataMap[channel], channel)
+            dataSet.setDrawValues(false)
+            dataSet.setDrawCircles(false)
+            eegDataMap[channel] = mutableListOf()
+            lineData.addDataSet(dataSet)
+        }
+
         eegChart.data = lineData
         eegChart.setTouchEnabled(true)
         eegChart.isDragEnabled = true
@@ -65,14 +70,12 @@ class HomeFragment : Fragment() {
         eegChart.invalidate()
     }
 
-
-
     private fun loadData() {
         val csvFileReader = CSVFileReader()
-        eegDataList = csvFileReader.readCSVFile(requireContext(), "eeg_data.csv")
+        eegDataList = csvFileReader.readCSVFile(requireContext(), "eeg_data_10_20_simulated.csv")
         Log.d("HomeFragment", "Data size: ${eegDataList.size}")
         eegDataList.forEach {
-            Log.d("HomeFragment", "Data point: ${it.timestamp}, ${it.value}")
+            Log.d("HomeFragment", "Data point: ${it.timestamp}, ${it.values}")
         }
     }
 
@@ -82,27 +85,30 @@ class HomeFragment : Fragment() {
             override fun run() {
                 if (currentIndex < eegDataList.size) {
                     val dataPoint = eegDataList[currentIndex]
-                    Log.d("HomeFragment", "Processing entry: ${dataPoint.timestamp}, ${dataPoint.value}")
+                    Log.d("HomeFragment", "Processing entry: ${dataPoint.timestamp}, ${dataPoint.values}")
 
                     try {
-                        val entry = Entry(dataPoint.timestamp, dataPoint.value)
-                        val dataSet = eegChart.data.getDataSetByIndex(0)
+                        for ((channel, value) in dataPoint.values) {
+                            val entry = Entry(dataPoint.timestamp, value)
+                            val dataSet = eegChart.data.getDataSetByLabel(channel, true) as LineDataSet
 
-                        dataSet.addEntry(entry)
-                        eegChart.data.notifyDataChanged()
+                            dataSet.addEntry(entry)
+                            eegChart.data.notifyDataChanged()
+                        }
                         eegChart.notifyDataSetChanged()
                         eegChart.invalidate()
 
-                        Log.d("HomeFragment", "Added entry: ${dataPoint.timestamp}, ${dataPoint.value}")
+                        Log.d("HomeFragment", "Added entry: ${dataPoint.timestamp}, ${dataPoint.values}")
                         currentIndex++
                     } catch (e: Exception) {
-                        Log.e("HomeFragment", "Error adding entry: ${dataPoint.timestamp}, ${dataPoint.value}", e)
+                        Log.e("HomeFragment", "Error adding entry: ${dataPoint.timestamp}, ${dataPoint.values}", e)
                     }
                 }
                 handler.postDelayed(this, 1000) // Update every second
             }
         }, 1000)
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         handler.removeCallbacksAndMessages(null) // Stop the handler when the view is destroyed
