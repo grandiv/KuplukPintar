@@ -1,15 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.HomeFragment">
+    android:orientation="vertical"
+    android:paddingTop="60dp"
+    android:paddingBottom="60dp">
+    >
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Fragment Home"
-        android:gravity="center"/>
+        android:id="@+id/tv_brainwave_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gelombang Otak"
+        android:textSize="16sp"
+        android:layout_margin="16dp" />
 
-</FrameLayout>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/eegChart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kondisi saat ini:"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tv_current_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Normal"
+            android:background="@drawable/sh_status_normal"
+            android:padding="8dp"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Microseizure terakhir:"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tv_last_microseizure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jam hh:mm:ss | Tanggal dd-mm-yyyy"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kejang terakhir:"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tv_last_seizure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jam hh:mm:ss | Tanggal dd-mm-yyyy"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>
