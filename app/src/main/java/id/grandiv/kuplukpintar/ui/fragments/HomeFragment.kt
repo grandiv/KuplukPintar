@@ -72,7 +72,7 @@ class HomeFragment : Fragment() {
 
     private fun loadData() {
         val csvFileReader = CSVFileReader()
-        eegDataList = csvFileReader.readCSVFile(requireContext(), "eeg_data_10_20_simulated.csv")
+        eegDataList = csvFileReader.readCSVFile(requireContext(), "new_eeg_data.csv")
         Log.d("HomeFragment", "Data size: ${eegDataList.size}")
         eegDataList.forEach {
             Log.d("HomeFragment", "Data point: ${it.timestamp}, ${it.values}")
