@@ -72,4 +72,5 @@ dependencies {
     implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("org.tensorflow:tensorflow-lite:2.5.0")
 }

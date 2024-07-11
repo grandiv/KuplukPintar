@@ -12,11 +12,15 @@ import androidx.fragment.app.Fragment
 import id.grandiv.kuplukpintar.R
 import id.grandiv.kuplukpintar.utils.CSVFileReader
 import id.grandiv.kuplukpintar.utils.EEGData
+import id.grandiv.kuplukpintar.utils.TFLiteModel
+
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+
+import java.io.IOException
 
 class HomeFragment : Fragment() {
     private lateinit var eegChart: LineChart
@@ -25,6 +29,7 @@ class HomeFragment : Fragment() {
     private lateinit var lastSeizureTextView: TextView
     private val eegDataMap = mutableMapOf<String, MutableList<Entry>>()
     private var currentIndex = 0
+    private lateinit var tfliteModel: TFLiteModel
     private lateinit var handler: Handler
     private lateinit var eegDataList: List<EEGData>
 
@@ -38,6 +43,12 @@ class HomeFragment : Fragment() {
         currentStatusTextView = view.findViewById(R.id.tv_current_status)
         lastMicroseizureTextView = view.findViewById(R.id.tv_last_microseizure)
         lastSeizureTextView = view.findViewById(R.id.tv_last_seizure)
+
+        try {
+            tfliteModel = TFLiteModel(requireContext(), "seizure_prediction_model.tflite")
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
 
         loadData()
         setupChart()
@@ -72,7 +83,7 @@ class HomeFragment : Fragment() {
 
     private fun loadData() {
         val csvFileReader = CSVFileReader()
-        eegDataList = csvFileReader.readCSVFile(requireContext(), "new_eeg_data.csv")
+        eegDataList = csvFileReader.readCSVFile(requireContext(), "new4_eeg_data.csv")
         Log.d("HomeFragment", "Data size: ${eegDataList.size}")
         eegDataList.forEach {
             Log.d("HomeFragment", "Data point: ${it.timestamp}, ${it.values}")
@@ -104,9 +115,9 @@ class HomeFragment : Fragment() {
                         Log.e("HomeFragment", "Error adding entry: ${dataPoint.timestamp}, ${dataPoint.values}", e)
                     }
                 }
-                handler.postDelayed(this, 1000) // Update every second
+                handler.postDelayed(this, 100) // Update every 0.1 seconds
             }
-        }, 1000)
+        }, 100)
     }
 
     override fun onDestroyView() {

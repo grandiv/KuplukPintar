@@ -8,38 +8,59 @@
     android:paddingBottom="60dp">
     >
 
-    <TextView
-        android:id="@+id/tv_brainwave_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gelombang Otak"
-        android:textSize="16sp"
-        android:layout_margin="16dp" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/eegChart"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_margin="16dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_brainwave_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gelombang Otak"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppinsregular"
+            android:layout_margin="16dp"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sh_rounded_blue_border"
+        android:layout_margin="12dp">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/eegChart"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="16dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_margin="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Kondisi saat ini:"
+            android:textColor="@color/darkblue"
+            android:fontFamily="@font/poppinsregular"
             android:textSize="16sp"
             android:layout_marginEnd="8dp" />
 
         <TextView
             android:id="@+id/tv_current_status"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Normal"
+            android:gravity="center"
             android:background="@drawable/sh_status_normal"
             android:padding="8dp"
             android:textColor="@android:color/white" />
@@ -48,13 +69,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_margin="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Microseizure terakhir:"
+            android:textColor="@color/darkblue"
+            android:fontFamily="@font/poppinsregular"
             android:textSize="16sp"
             android:layout_marginEnd="8dp" />
 
@@ -62,6 +85,7 @@
             android:id="@+id/tv_last_microseizure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="Jam hh:mm:ss | Tanggal dd-mm-yyyy"
             android:textSize="16sp" />
     </LinearLayout>
@@ -69,13 +93,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_margin="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Kejang terakhir:"
+            android:textColor="@color/darkblue"
+            android:fontFamily="@font/poppinsregular"
             android:textSize="16sp"
             android:layout_marginEnd="8dp" />
 
@@ -83,6 +109,7 @@
             android:id="@+id/tv_last_seizure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="Jam hh:mm:ss | Tanggal dd-mm-yyyy"
             android:textSize="16sp" />
     </LinearLayout>
