@@ -13,13 +13,11 @@ import id.grandiv.kuplukpintar.R
 import id.grandiv.kuplukpintar.utils.CSVFileReader
 import id.grandiv.kuplukpintar.utils.EEGData
 import id.grandiv.kuplukpintar.utils.TFLiteModel
-
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-
 import java.io.IOException
 
 class HomeFragment : Fragment() {
@@ -45,7 +43,7 @@ class HomeFragment : Fragment() {
         lastSeizureTextView = view.findViewById(R.id.tv_last_seizure)
 
         try {
-            tfliteModel = TFLiteModel(requireContext(), "seizure_prediction_model.tflite")
+            tfliteModel = TFLiteModel(requireContext(), "v2_seizure_prediction_model.tflite")
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -84,24 +82,55 @@ class HomeFragment : Fragment() {
     private fun loadData() {
         val csvFileReader = CSVFileReader()
         eegDataList = csvFileReader.readCSVFile(requireContext(), "new4_eeg_data.csv")
-        Log.d("HomeFragment", "Data size: ${eegDataList.size}")
-        eegDataList.forEach {
-            Log.d("HomeFragment", "Data point: ${it.timestamp}, ${it.values}")
-        }
+        Log.d("HomeFragment", "Raw data size: ${eegDataList.size}")
     }
+
+    private fun extractFeatures(dataPoint: EEGData): FloatArray {
+        val featureVector = mutableListOf<Float>()
+        for (channel in dataPoint.values.keys) {
+            val value = dataPoint.values[channel] ?: 0f
+            featureVector.add(value)
+        }
+
+        val inputShape = tfliteModel.interpreter.getInputTensor(0).shape()
+        val inputLength = inputShape[1]
+
+        // If featureVector size is less than inputLength, pad with zeros
+        if (featureVector.size < inputLength) {
+            while (featureVector.size < inputLength) {
+                featureVector.add(0f)
+            }
+        }
+
+        // If featureVector size is greater than inputLength, truncate the list
+        if (featureVector.size > inputLength) {
+            featureVector.subList(inputLength, featureVector.size).clear()
+        }
+
+        if (featureVector.size != inputLength) {
+            throw IllegalArgumentException("Expected input length $inputLength but got ${featureVector.size}")
+        }
+
+        return featureVector.toFloatArray()
+    }
+
 
     private fun startRealTimeUpdates() {
         handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run() {
                 if (currentIndex < eegDataList.size) {
-                    val dataPoint = eegDataList[currentIndex]
-                    Log.d("HomeFragment", "Processing entry: ${dataPoint.timestamp}, ${dataPoint.values}")
+                    val rawDataPoint = eegDataList[currentIndex]
+                    Log.d(
+                        "HomeFragment",
+                        "Processing entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}"
+                    )
 
                     try {
-                        for ((channel, value) in dataPoint.values) {
-                            val entry = Entry(dataPoint.timestamp, value)
-                            val dataSet = eegChart.data.getDataSetByLabel(channel, true) as LineDataSet
+                        for ((channel, value) in rawDataPoint.values) {
+                            val entry = Entry(rawDataPoint.timestamp, value)
+                            val dataSet =
+                                eegChart.data.getDataSetByLabel(channel, true) as LineDataSet
 
                             dataSet.addEntry(entry)
                             eegChart.data.notifyDataChanged()
@@ -109,10 +138,38 @@ class HomeFragment : Fragment() {
                         eegChart.notifyDataSetChanged()
                         eegChart.invalidate()
 
-                        Log.d("HomeFragment", "Added entry: ${dataPoint.timestamp}, ${dataPoint.values}")
+                        // Extract features from raw data
+                        val inputData = extractFeatures(rawDataPoint)
+                        val prediction = tfliteModel.predict(inputData)
+
+                        // Determine the status based on prediction
+                        val maxIndex = prediction.withIndex().maxByOrNull { it.value }?.index
+                        val status = when (maxIndex) {
+                            0 -> "Normal"
+                            1 -> "Microseizure"
+                            2 -> "Seizure"
+                            else -> "Unknown"
+                        }
+
+                        // Update UI accordingly
+                        currentStatusTextView.text = status
+                        when (status) {
+                            "Normal" -> currentStatusTextView.setBackgroundResource(R.drawable.sh_status_normal)
+                            "Microseizure" -> currentStatusTextView.setBackgroundResource(R.drawable.sh_status_microseizure)
+                            "Seizure" -> currentStatusTextView.setBackgroundResource(R.drawable.sh_status_seizure)
+                        }
+
+                        Log.d(
+                            "HomeFragment",
+                            "Added entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}"
+                        )
                         currentIndex++
                     } catch (e: Exception) {
-                        Log.e("HomeFragment", "Error adding entry: ${dataPoint.timestamp}, ${dataPoint.values}", e)
+                        Log.e(
+                            "HomeFragment",
+                            "Error adding entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}",
+                            e
+                        )
                     }
                 }
                 handler.postDelayed(this, 100) // Update every 0.1 seconds

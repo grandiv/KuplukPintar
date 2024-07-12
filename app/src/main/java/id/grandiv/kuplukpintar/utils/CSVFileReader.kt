@@ -36,4 +36,24 @@ class CSVFileReader {
         }
         return eegDataList
     }
+
+    fun readProcessedCSVFile(context: Context, filename: String): List<List<Float>> {
+        val processedDataList = mutableListOf<List<Float>>()
+        try {
+            val inputStream = context.assets.open(filename)
+            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+            bufferedReader.readLine() // skip header
+
+            var line: String?
+            while (bufferedReader.readLine().also { line = it } != null) {
+                val tokens = line!!.split(",")
+                val values = tokens.mapNotNull { it.replace("\"", "").toFloatOrNull() }
+                processedDataList.add(values)
+            }
+            bufferedReader.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return processedDataList
+    }
 }
