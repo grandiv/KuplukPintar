@@ -42,11 +42,7 @@ class HomeFragment : Fragment() {
         lastMicroseizureTextView = view.findViewById(R.id.tv_last_microseizure)
         lastSeizureTextView = view.findViewById(R.id.tv_last_seizure)
 
-        try {
-            tfliteModel = TFLiteModel(requireContext(), "v2_seizure_prediction_model.tflite")
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        tfliteModel = TFLiteModel(requireContext(), "v6_seizure_prediction_model.tflite")
 
         loadData()
         setupChart()
@@ -86,10 +82,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun normalize(data: FloatArray): FloatArray {
-        // Apply the same normalization logic as during training
-        // Example normalization: assuming mean and std from training data
-        val mean = 0.0f // replace with actual mean
-        val std = 1.0f // replace with actual std
+        val mean = 0.0f // Replace with actual mean from training
+        val std = 1.0f // Replace with actual std from training
 
         return data.map { (it - mean) / std }.toFloatArray()
     }
@@ -104,14 +98,12 @@ class HomeFragment : Fragment() {
         val inputShape = tfliteModel.interpreter.getInputTensor(0).shape()
         val inputLength = inputShape[1]
 
-        // If featureVector size is less than inputLength, pad with zeros
         if (featureVector.size < inputLength) {
             while (featureVector.size < inputLength) {
                 featureVector.add(0f)
             }
         }
 
-        // If featureVector size is greater than inputLength, truncate the list
         if (featureVector.size > inputLength) {
             featureVector.subList(inputLength, featureVector.size).clear()
         }
@@ -120,8 +112,7 @@ class HomeFragment : Fragment() {
             throw IllegalArgumentException("Expected input length $inputLength but got ${featureVector.size}")
         }
 
-        val featuresArray = featureVector.toFloatArray()
-        return normalize(featuresArray)
+        return normalize(featureVector.toFloatArray())
     }
 
     private fun startRealTimeUpdates() {
@@ -130,16 +121,12 @@ class HomeFragment : Fragment() {
             override fun run() {
                 if (currentIndex < eegDataList.size) {
                     val rawDataPoint = eegDataList[currentIndex]
-                    Log.d(
-                        "HomeFragment",
-                        "Processing entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}"
-                    )
+                    Log.d("HomeFragment", "Processing entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}")
 
                     try {
                         for ((channel, value) in rawDataPoint.values) {
-                            val entry = Entry(rawDataPoint.timestamp, value)
-                            val dataSet =
-                                eegChart.data.getDataSetByLabel(channel, true) as LineDataSet
+                            val entry = Entry(currentIndex.toFloat(), value)
+                            val dataSet = eegChart.data.getDataSetByLabel(channel, true) as LineDataSet
 
                             dataSet.addEntry(entry)
                             eegChart.data.notifyDataChanged()
@@ -147,15 +134,13 @@ class HomeFragment : Fragment() {
                         eegChart.notifyDataSetChanged()
                         eegChart.invalidate()
 
-                        // Extract features from raw data
                         val inputData = extractFeatures(rawDataPoint)
                         Log.d("HomeFragment", "Input data for prediction: ${inputData.joinToString()}")
 
                         val prediction = tfliteModel.predict(inputData)
                         Log.d("HomeFragment", "Model prediction: ${prediction.joinToString()}")
 
-                        // Determine the status based on prediction
-                        val maxIndex = prediction.withIndex().maxByOrNull { it.value }?.index
+                        val maxIndex = prediction.indices.maxByOrNull { prediction[it] }
                         val status = when (maxIndex) {
                             0 -> "Normal"
                             1 -> "Microseizure"
@@ -163,7 +148,6 @@ class HomeFragment : Fragment() {
                             else -> "Unknown"
                         }
 
-                        // Update UI accordingly
                         currentStatusTextView.text = status
                         when (status) {
                             "Normal" -> currentStatusTextView.setBackgroundResource(R.drawable.sh_status_normal)
@@ -171,20 +155,13 @@ class HomeFragment : Fragment() {
                             "Seizure" -> currentStatusTextView.setBackgroundResource(R.drawable.sh_status_seizure)
                         }
 
-                        Log.d(
-                            "HomeFragment",
-                            "Added entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}"
-                        )
+                        Log.d("HomeFragment", "Added entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}")
                         currentIndex++
                     } catch (e: Exception) {
-                        Log.e(
-                            "HomeFragment",
-                            "Error adding entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}",
-                            e
-                        )
+                        Log.e("HomeFragment", "Error adding entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}", e)
                     }
                 }
-                handler.postDelayed(this, 100) // Update every 0.1 seconds
+                handler.postDelayed(this, 100)
             }
         }, 100)
     }
