@@ -125,7 +125,7 @@ class HomeFragment : Fragment() {
 
                     try {
                         for ((channel, value) in rawDataPoint.values) {
-                            val entry = Entry(currentIndex.toFloat(), value)
+                            val entry = Entry(rawDataPoint.timestamp, value) // Use timestamp instead of currentIndex
                             val dataSet = eegChart.data.getDataSetByLabel(channel, true) as LineDataSet
 
                             dataSet.addEntry(entry)
