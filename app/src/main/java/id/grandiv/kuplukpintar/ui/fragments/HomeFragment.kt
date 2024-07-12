@@ -85,6 +85,15 @@ class HomeFragment : Fragment() {
         Log.d("HomeFragment", "Raw data size: ${eegDataList.size}")
     }
 
+    private fun normalize(data: FloatArray): FloatArray {
+        // Apply the same normalization logic as during training
+        // Example normalization: assuming mean and std from training data
+        val mean = 0.0f // replace with actual mean
+        val std = 1.0f // replace with actual std
+
+        return data.map { (it - mean) / std }.toFloatArray()
+    }
+
     private fun extractFeatures(dataPoint: EEGData): FloatArray {
         val featureVector = mutableListOf<Float>()
         for (channel in dataPoint.values.keys) {
@@ -111,9 +120,9 @@ class HomeFragment : Fragment() {
             throw IllegalArgumentException("Expected input length $inputLength but got ${featureVector.size}")
         }
 
-        return featureVector.toFloatArray()
+        val featuresArray = featureVector.toFloatArray()
+        return normalize(featuresArray)
     }
-
 
     private fun startRealTimeUpdates() {
         handler = Handler(Looper.getMainLooper())
@@ -140,7 +149,10 @@ class HomeFragment : Fragment() {
 
                         // Extract features from raw data
                         val inputData = extractFeatures(rawDataPoint)
+                        Log.d("HomeFragment", "Input data for prediction: ${inputData.joinToString()}")
+
                         val prediction = tfliteModel.predict(inputData)
+                        Log.d("HomeFragment", "Model prediction: ${prediction.joinToString()}")
 
                         // Determine the status based on prediction
                         val maxIndex = prediction.withIndex().maxByOrNull { it.value }?.index
@@ -175,10 +187,5 @@ class HomeFragment : Fragment() {
                 handler.postDelayed(this, 100) // Update every 0.1 seconds
             }
         }, 100)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        handler.removeCallbacksAndMessages(null) // Stop the handler when the view is destroyed
     }
 }
