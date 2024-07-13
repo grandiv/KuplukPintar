@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
         lastMicroseizureTextView = view.findViewById(R.id.tv_last_microseizure)
         lastSeizureTextView = view.findViewById(R.id.tv_last_seizure)
 
-        tfliteModel = TFLiteModel(requireContext(), "v6_seizure_prediction_model.tflite")
+        tfliteModel = TFLiteModel(requireContext(), "v7_seizure_prediction_model.tflite")
 
         loadData()
         setupChart()
@@ -82,10 +82,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun normalize(data: FloatArray): FloatArray {
-        val mean = 0.0f // Replace with actual mean from training
-        val std = 1.0f // Replace with actual std from training
+        val mean = floatArrayOf(0.09955387f, -0.09428317f,  0.05470202f,  0.01383419f,  0.09847564f, -0.01032247f,
+                -0.06579117f, -0.10411164f, -0.03822606f, -0.00253246f)
+        val std = floatArrayOf(
+            7.7848763f, 8.057112f, 7.74029f, 7.953238f, 7.6843634f, 7.855832f,
+            7.609452f, 7.830898f, 7.668156f, 7.869738f
+        )
 
-        return data.map { (it - mean) / std }.toFloatArray()
+        return data.mapIndexed { index, value -> (value - mean[index]) / std[index] }.toFloatArray()
     }
 
     private fun extractFeatures(dataPoint: EEGData): FloatArray {
