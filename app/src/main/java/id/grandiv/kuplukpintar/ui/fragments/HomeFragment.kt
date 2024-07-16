@@ -38,6 +38,10 @@ class HomeFragment : Fragment() {
     private var lastMicroseizureTime: Long? = null
     private var lastSeizureTime: Long? = null
 
+    // Variables for smoothing predictions
+    private val predictionWindowSize = 5
+    private val predictionWindow = mutableListOf<Int>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,8 +96,8 @@ class HomeFragment : Fragment() {
         val mean = floatArrayOf(0.09955387f, -0.09428317f,  0.05470202f,  0.01383419f,  0.09847564f, -0.01032247f,
             -0.06579117f, -0.10411164f, -0.03822606f, -0.00253246f)
         val std = floatArrayOf(
-            7.78487633f, 8.05711177f, 7.74028999f, 7.9532378f, 7.6843636f, 7.85583217f,
-            7.60945171f, 7.8308977f, 7.66815596f, 7.86973793f
+            7.7848763f, 8.057112f, 7.74029f, 7.953238f, 7.6843634f, 7.855832f,
+            7.609452f, 7.830898f, 7.668156f, 7.869738f
         )
 
         return data.mapIndexed { index, value -> (value - mean[index]) / std[index] }.toFloatArray()
@@ -151,8 +155,16 @@ class HomeFragment : Fragment() {
                         val prediction = tfliteModel.predict(inputData)
                         Log.d("HomeFragment", "Model prediction: ${prediction.joinToString()}")
 
-                        val maxIndex = prediction.indices.maxByOrNull { prediction[it] }
-                        val status = when (maxIndex) {
+                        val maxIndex = prediction.indices.maxByOrNull { prediction[it] } ?: -1
+
+                        if (predictionWindow.size == predictionWindowSize) {
+                            predictionWindow.removeAt(0)
+                        }
+                        predictionWindow.add(maxIndex)
+
+                        val smoothedPrediction = predictionWindow.groupBy { it }.maxByOrNull { it.value.size }?.key ?: -1
+
+                        val status = when (smoothedPrediction) {
                             0 -> "Normal"
                             1 -> "Microseizure"
                             2 -> "Seizure"
