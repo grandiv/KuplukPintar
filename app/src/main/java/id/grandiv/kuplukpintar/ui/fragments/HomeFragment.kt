@@ -1,8 +1,14 @@
 package id.grandiv.kuplukpintar.ui.fragments
 
+import android.content.Context
+import android.media.Ringtone
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -41,6 +47,12 @@ class HomeFragment : Fragment() {
     // Variables for smoothing predictions
     private val predictionWindowSize = 5
     private val predictionWindow = mutableListOf<Int>()
+
+    // Variables for ringtone and vibration management
+    private var ringtone: Ringtone? = null
+    private var currentStatus: String? = null
+    private var vibrationHandler: Handler? = null
+    private var ringtoneHandler: Handler? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,7 +105,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun normalize(data: FloatArray): FloatArray {
-        val mean = floatArrayOf(0.09955387f, -0.09428317f,  0.05470202f,  0.01383419f,  0.09847564f, -0.01032247f,
+        val mean = floatArrayOf(0.09955387f, -0.09428317f, 0.05470202f, 0.01383419f, 0.09847564f, -0.01032247f,
             -0.06579117f, -0.10411164f, -0.03822606f, -0.00253246f)
         val std = floatArrayOf(
             7.7848763f, 8.057112f, 7.74029f, 7.953238f, 7.6843634f, 7.855832f,
@@ -171,9 +183,17 @@ class HomeFragment : Fragment() {
                             else -> "Unknown"
                         }
 
+                        if (currentStatus != status) {
+                            currentStatus = status
+                            triggerAlert(status)
+                        }
+
                         currentStatusTextView.text = status
                         when (status) {
-                            "Normal" -> currentStatusTextView.setBackgroundResource(R.drawable.sh_status_normal)
+                            "Normal" -> {
+                                currentStatusTextView.setBackgroundResource(R.drawable.sh_status_normal)
+                                stopAlert()
+                            }
                             "Microseizure" -> {
                                 currentStatusTextView.setBackgroundResource(R.drawable.sh_status_microseizure)
                                 lastMicroseizureTime = System.currentTimeMillis()
@@ -209,5 +229,60 @@ class HomeFragment : Fragment() {
             val dateFormat = SimpleDateFormat("HH:mm:ss | dd-MM-yyyy", Locale.getDefault())
             lastSeizureTextView.text = dateFormat.format(Date(it))
         }
+    }
+
+    private fun triggerAlert(type: String) {
+        val vibrator = requireContext().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val pattern = when (type) {
+            "Microseizure" -> longArrayOf(0, 500, 200, 500) // Vibration pattern for microseizure
+            "Seizure" -> longArrayOf(0, 1000, 500, 1000, 500, 1000) // Vibration pattern for seizure
+            else -> return
+        }
+
+        if (vibrator.hasVibrator()) {
+            vibrationHandler?.removeCallbacksAndMessages(null)
+            vibrationHandler = Handler(Looper.getMainLooper())
+            vibrationHandler?.post(object : Runnable {
+                override fun run() {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
+                    } else {
+                        vibrator.vibrate(pattern, -1)
+                    }
+                    vibrationHandler?.postDelayed(this, pattern.sum())
+                }
+            })
+        }
+
+        // Stop the previous ringtone if it's playing
+        ringtone?.stop()
+
+        val notificationUri: Uri = when (type) {
+            "Microseizure" -> Uri.parse("android.resource://${requireContext().packageName}/raw/microseizure_ringtone")
+            "Seizure" -> Uri.parse("android.resource://${requireContext().packageName}/raw/seizure_ringtone")
+            else -> return
+        }
+
+        ringtoneHandler?.removeCallbacksAndMessages(null)
+        ringtoneHandler = Handler(Looper.getMainLooper())
+        ringtoneHandler?.post(object : Runnable {
+            override fun run() {
+                ringtone = RingtoneManager.getRingtone(requireContext(), notificationUri)
+                ringtone?.play()
+                ringtoneHandler?.postDelayed(this, 5000) // Repeat after 5 seconds
+            }
+        })
+    }
+
+    private fun stopAlert() {
+        vibrationHandler?.removeCallbacksAndMessages(null)
+        ringtoneHandler?.removeCallbacksAndMessages(null)
+        ringtone?.stop()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        handler.removeCallbacksAndMessages(null)
+        stopAlert()
     }
 }
