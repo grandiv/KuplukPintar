@@ -19,6 +19,9 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HomeFragment : Fragment() {
     private lateinit var eegChart: LineChart
@@ -31,6 +34,10 @@ class HomeFragment : Fragment() {
     private lateinit var handler: Handler
     private lateinit var eegDataList: List<EEGData>
 
+    // Variables to store timestamps
+    private var lastMicroseizureTime: Long? = null
+    private var lastSeizureTime: Long? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,7 +49,7 @@ class HomeFragment : Fragment() {
         lastMicroseizureTextView = view.findViewById(R.id.tv_last_microseizure)
         lastSeizureTextView = view.findViewById(R.id.tv_last_seizure)
 
-        tfliteModel = TFLiteModel(requireContext(), "v7_seizure_prediction_model.tflite")
+        tfliteModel = TFLiteModel(requireContext(), "v8_seizure_prediction_model.tflite")
 
         loadData()
         setupChart()
@@ -83,10 +90,10 @@ class HomeFragment : Fragment() {
 
     private fun normalize(data: FloatArray): FloatArray {
         val mean = floatArrayOf(0.09955387f, -0.09428317f,  0.05470202f,  0.01383419f,  0.09847564f, -0.01032247f,
-                -0.06579117f, -0.10411164f, -0.03822606f, -0.00253246f)
+            -0.06579117f, -0.10411164f, -0.03822606f, -0.00253246f)
         val std = floatArrayOf(
-            7.7848763f, 8.057112f, 7.74029f, 7.953238f, 7.6843634f, 7.855832f,
-            7.609452f, 7.830898f, 7.668156f, 7.869738f
+            7.78487633f, 8.05711177f, 7.74028999f, 7.9532378f, 7.6843636f, 7.85583217f,
+            7.60945171f, 7.8308977f, 7.66815596f, 7.86973793f
         )
 
         return data.mapIndexed { index, value -> (value - mean[index]) / std[index] }.toFloatArray()
@@ -155,8 +162,16 @@ class HomeFragment : Fragment() {
                         currentStatusTextView.text = status
                         when (status) {
                             "Normal" -> currentStatusTextView.setBackgroundResource(R.drawable.sh_status_normal)
-                            "Microseizure" -> currentStatusTextView.setBackgroundResource(R.drawable.sh_status_microseizure)
-                            "Seizure" -> currentStatusTextView.setBackgroundResource(R.drawable.sh_status_seizure)
+                            "Microseizure" -> {
+                                currentStatusTextView.setBackgroundResource(R.drawable.sh_status_microseizure)
+                                lastMicroseizureTime = System.currentTimeMillis()
+                                updateLastMicroseizureTextView()
+                            }
+                            "Seizure" -> {
+                                currentStatusTextView.setBackgroundResource(R.drawable.sh_status_seizure)
+                                lastSeizureTime = System.currentTimeMillis()
+                                updateLastSeizureTextView()
+                            }
                         }
 
                         Log.d("HomeFragment", "Added entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}")
@@ -168,5 +183,19 @@ class HomeFragment : Fragment() {
                 handler.postDelayed(this, 100)
             }
         }, 100)
+    }
+
+    private fun updateLastMicroseizureTextView() {
+        lastMicroseizureTime?.let {
+            val dateFormat = SimpleDateFormat("HH:mm:ss | dd-MM-yyyy", Locale.getDefault())
+            lastMicroseizureTextView.text = dateFormat.format(Date(it))
+        }
+    }
+
+    private fun updateLastSeizureTextView() {
+        lastSeizureTime?.let {
+            val dateFormat = SimpleDateFormat("HH:mm:ss | dd-MM-yyyy", Locale.getDefault())
+            lastSeizureTextView.text = dateFormat.format(Date(it))
+        }
     }
 }
