@@ -76,11 +76,18 @@ class HomeFragment : Fragment() {
 
     private fun setupChart() {
         val lineData = LineData()
+        val colors = listOf(
+            R.color.red, R.color.green, R.color.blue, R.color.yellow, R.color.purple,
+            R.color.darkpurple, R.color.darkgreen, R.color.darkred, R.color.darkblue, R.color.darkyellow
+        )
+        var colorIndex = 0
 
         for (channel in eegDataList[0].values.keys) {
             val dataSet = LineDataSet(eegDataMap[channel], channel)
             dataSet.setDrawValues(false)
             dataSet.setDrawCircles(false)
+            dataSet.color = resources.getColor(colors[colorIndex], null)
+            colorIndex = (colorIndex + 1) % colors.size
             eegDataMap[channel] = mutableListOf()
             lineData.addDataSet(dataSet)
         }
