@@ -1,5 +1,6 @@
 package id.grandiv.kuplukpintar.ui.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +13,18 @@ import java.util.*
 import id.grandiv.kuplukpintar.R
 
 class JadwalKontrolAdapter(
+    private val context: Context,
     private val jadwalKontrolList: List<JadwalKontrol>,
     private val onCheckList: (JadwalKontrol) -> Unit,
     private val onEdit: (JadwalKontrol) -> Unit
 ) : RecyclerView.Adapter<JadwalKontrolAdapter.ViewHolder>() {
 
+    private val role: String
+
+    init {
+        val sharedPref = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE)
+        role = sharedPref.getString("loggedInRole", "") ?: ""
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvTanggal: TextView = view.findViewById(R.id.tv_tanggal)
@@ -40,8 +48,13 @@ class JadwalKontrolAdapter(
         holder.tvTempat.text = jadwalKontrol.tempat
         holder.tvDokter.text = jadwalKontrol.dokter
         holder.tvPesan.text = jadwalKontrol.pesan
-        holder.btnChecklist.setOnClickListener { onCheckList(jadwalKontrol) }
-        holder.btnEdit.setOnClickListener { onEdit(jadwalKontrol) }
+        if (role == "pasien") {
+            holder.btnChecklist.visibility = View.GONE
+            holder.btnEdit.visibility = View.GONE
+        } else {
+            holder.btnChecklist.setOnClickListener { onCheckList(jadwalKontrol) }
+            holder.btnEdit.setOnClickListener { onEdit(jadwalKontrol) }
+        }
     }
 
     override fun getItemCount() = jadwalKontrolList.size

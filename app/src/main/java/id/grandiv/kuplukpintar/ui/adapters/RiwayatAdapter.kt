@@ -1,12 +1,12 @@
 package id.grandiv.kuplukpintar.ui.adapters
 
-import SeizureRecord
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import id.grandiv.kuplukpintar.R
+import id.grandiv.kuplukpintar.models.SeizureRecord
 
 class RiwayatAdapter(private val records: List<SeizureRecord>) : RecyclerView.Adapter<RiwayatAdapter.ViewHolder>() {
 

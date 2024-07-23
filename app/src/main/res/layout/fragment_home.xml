@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Jam 21:54:11 | Tanggal 16-07-2024"
+            android:text="Jam 10:22:11 | Tanggal 18-07-2024"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Jam 21:54:12 | Tanggal 16-07-2024"
+            android:text="Jam 10:23:10 | Tanggal 18-07-2024"
             android:textSize="16sp" />
     </LinearLayout>
 </LinearLayout>

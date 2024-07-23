@@ -26,6 +26,7 @@ import id.grandiv.kuplukpintar.ui.adapters.JadwalKontrolAdapter
 import id.grandiv.kuplukpintar.ui.adapters.JadwalObatAdapter
 import id.grandiv.kuplukpintar.ui.adapters.RiwayatKontrolAdapter
 import id.grandiv.kuplukpintar.ui.adapters.WeekAdapter
+import android.content.Context
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -45,6 +46,15 @@ class JadwalObatFragment : Fragment() {
         val recyclerViewWeek = view.findViewById<RecyclerView>(R.id.recyclerViewWeek)
         val tvFullDate = view.findViewById<TextView>(R.id.tv_full_date)
 
+        // Fetch the user's role from shared preferences
+        val sharedPref = activity?.getSharedPreferences("MyPref", Context.MODE_PRIVATE)
+        val role = sharedPref?.getString("loggedInRole", "")
+
+        // Hide the buttons if the user's role is "pasien"
+        if (role == "pasien") {
+            view.findViewById<Button>(R.id.addButton).visibility = View.GONE
+        }
+
         // membuat recyclerview jadi horizontal
         recyclerViewWeek.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
@@ -60,7 +70,7 @@ class JadwalObatFragment : Fragment() {
 
         jadwalObatList = mutableListOf()
 
-        jadwalObatAdapter = JadwalObatAdapter(jadwalObatList, ::editJadwalObat)
+        jadwalObatAdapter = JadwalObatAdapter(requireContext(), jadwalObatList, ::editJadwalObat)
         jadwalObatRecyclerView.adapter = jadwalObatAdapter
 
         val addButton = view.findViewById<Button>(R.id.addButton)

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,6 +42,15 @@ class JadwalKontrolFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_jadwal_kontrol, container, false)
 
+        // Fetch the user's role from shared preferences
+        val sharedPref = activity?.getSharedPreferences("MyPref", Context.MODE_PRIVATE)
+        val role = sharedPref?.getString("loggedInRole", "")
+
+        // Hide the buttons if the user's role is "pasien"
+        if (role == "pasien") {
+            view.findViewById<Button>(R.id.addButton).visibility = View.GONE
+        }
+
         db = Firebase.firestore
 
         jadwalKontrolRecyclerView = view.findViewById(R.id.recyclerViewJadwal)
@@ -52,7 +62,7 @@ class JadwalKontrolFragment : Fragment() {
         jadwalKontrolList = mutableListOf()
         riwayatKontrolList = mutableListOf()
 
-        jadwalKontrolAdapter = JadwalKontrolAdapter(jadwalKontrolList, ::checklistJadwalKontrol, ::editJadwalKontrol)
+        jadwalKontrolAdapter = JadwalKontrolAdapter(requireContext(), jadwalKontrolList, ::checklistJadwalKontrol, ::editJadwalKontrol)
         jadwalKontrolRecyclerView.adapter = jadwalKontrolAdapter
 
         riwayatKontrolAdapter = RiwayatKontrolAdapter(riwayatKontrolList, this)

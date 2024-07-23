@@ -24,6 +24,10 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.firestore
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -39,6 +43,7 @@ class HomeFragment : Fragment() {
     private lateinit var tfliteModel: TFLiteModel
     private lateinit var handler: Handler
     private lateinit var eegDataList: List<EEGData>
+    private lateinit var db: FirebaseFirestore
 
     // Variables to store timestamps
     private var lastMicroseizureTime: Long? = null
@@ -70,6 +75,8 @@ class HomeFragment : Fragment() {
         loadData()
         setupChart()
         startRealTimeUpdates()
+
+        db = Firebase.firestore
 
         return view
     }
@@ -150,6 +157,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun startRealTimeUpdates() {
+        var previousStatus: String? = null
         handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run() {
@@ -213,6 +221,18 @@ class HomeFragment : Fragment() {
                             }
                         }
 
+                        // If the previous status was "Microseizure" or "Seizure" and the current status is different,
+                        // update Firestore with the last microseizure or seizure timestamp
+                        if ((previousStatus == "Microseizure" || previousStatus == "Seizure") && previousStatus != status) {
+                            val data = hashMapOf(
+                                "Microseizure terakhir" to lastMicroseizureTextView.text.toString(),
+                                "Seizure terakhir" to lastSeizureTextView.text.toString()
+                            )
+                            db.collection("riwayat").add(data)
+                        }
+
+                        previousStatus = status
+
                         Log.d("HomeFragment", "Added entry: ${rawDataPoint.timestamp}, ${rawDataPoint.values}")
                         currentIndex++
                     } catch (e: Exception) {
@@ -225,17 +245,29 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateLastMicroseizureTextView() {
-        lastMicroseizureTime?.let {
-            val dateFormat = SimpleDateFormat("HH:mm:ss | dd-MM-yyyy", Locale.getDefault())
-            lastMicroseizureTextView.text = dateFormat.format(Date(it))
-        }
+        db.collection("riwayat")
+            .orderBy("Microseizure terakhir", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val microseizureTimestamp = document.getString("Microseizure terakhir") ?: ""
+                    lastMicroseizureTextView.text = microseizureTimestamp
+                }
+            }
     }
 
     private fun updateLastSeizureTextView() {
-        lastSeizureTime?.let {
-            val dateFormat = SimpleDateFormat("HH:mm:ss | dd-MM-yyyy", Locale.getDefault())
-            lastSeizureTextView.text = dateFormat.format(Date(it))
-        }
+        db.collection("riwayat")
+            .orderBy("Seizure terakhir", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val seizureTimestamp = document.getString("Seizure terakhir") ?: ""
+                    lastSeizureTextView.text = seizureTimestamp
+                }
+            }
     }
 
     private fun triggerAlert(type: String) {
